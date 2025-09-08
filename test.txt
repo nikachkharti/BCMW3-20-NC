@@ -1,1 +1,43 @@
-Hello I am changed
+﻿ლიტერალები : 
+ტექსტური, რიცხვითი, ლოგიკური,
+
+-- მთელი რიცხვი (byte,sbyte,short,ushort,int,uint,long,ulong)
+-- ათწილადი (float,double,decimal)
+
+8BIT
+byte --- Byte
+sbyte ---Sbyte
+
+
+16BIT
+short --- Int16
+ushort --- UInt16
+
+
+32BIT
+int -- DEFAULT  --- Int32
+uint --- UInt32
+
+
+64BIT
+long --- Int64
+ulong --- UInt64
+
+
+
+
+float --- (float x = 12.7f)
+double --- DEFAULT  (double x = 12.7)
+decimal --- (decimal x = 12.7m)
+
+
+
+true | false
+bool
+
+
+"Nika Chkhartishvili"
+string x = "asdasdasdkasdkasbdkajsdbkjabsdkja  askdvakjsdkajbsd a skdjba"
+
+
+char x = 'J'
