@@ -1,4 +1,6 @@
-﻿#region CLASSWORK
+﻿
+
+#region CLASSWORK
 
 
 
@@ -127,8 +129,43 @@
 
 
 
+//WHILE     2
+//DO WHILE  4
+//FOR       1
+//FOREACH   1
 
 
+
+//int i = 1;
+//do
+//{
+//    i++;
+//    Console.WriteLine($"{i}.NIKA");
+//}
+//while (i <= 10);
+
+
+
+//int i = 1;
+//while (i <= 10)
+//{
+//    Console.WriteLine("NIKA");
+//    i++;
+//}
+
+
+
+//for (int i = 0; i < 10; i++)
+//{
+//    Console.WriteLine($"{i}.NIKA");
+//}
+
+
+//List<int> intList = new();
+//foreach (var item in intList)
+//{
+
+//}
 
 #endregion
 
