@@ -311,6 +311,45 @@
 // X  -- ნიშნავდეს აპლიკაციის შეჩერებას.
 
 
+//Console.WriteLine("CALCULATOR: [+ - * /] | X EXIT");
+
+//Console.Write("Enter First Number: ");
+//int firstNumber = int.Parse(Console.ReadLine());
+
+
+//try
+//{
+//    if (firstNumber < 18)
+//    {
+//        throw new ArgumentException("Only adult person is allowed");
+//    }
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+
+
+//try
+//{
+    //int x = int.Parse(firstNumber); // 15
+    //int y = x / 0;
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+//catch (FormatException formatException)
+//{
+//    Console.WriteLine(formatException.Message);
+//}
+//catch (DivideByZeroException divideByZeroException)
+//{
+//    Console.WriteLine(divideByZeroException.Message);
+//}
+
+
+
 
 
 
