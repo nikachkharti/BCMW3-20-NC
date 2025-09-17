@@ -1,6 +1,4 @@
-﻿using System.Security;
-
-namespace First
+﻿namespace First
 {
     internal class Program
     {
@@ -240,6 +238,72 @@ namespace First
             //}
 
 
+
+            //string signal = "Green";
+
+            //switch (signal.ToLower())
+            //{
+            //    case "red":
+            //        Console.WriteLine("Stop!");
+            //        break;
+            //    case "yellow":
+            //        Console.WriteLine("Get Ready!");
+            //        break;
+            //    case "green":
+            //        Console.WriteLine("Go!");
+            //        break;
+            //    default:
+            //        Console.WriteLine("Invalid signal");
+            //        break;
+            //}
+
+
+            //decimal balance = 500;
+            //decimal withdrawal = 600;
+
+            //if (withdrawal <= 0)
+            //    Console.WriteLine("Invalid withdrawal amount");
+            //else if (withdrawal > balance)
+            //    Console.WriteLine("Insufficient balance");
+            //else
+            //{
+            //    balance -= withdrawal;
+            //    Console.WriteLine($"Withdrawal successful! Remaining balance: {balance}");
+            //}
+
+
+            //int score = 45;
+            //string result = (score >= 50) ? "Pass" : "Fail";
+            //Console.WriteLine($"Student result: {result}");
+
+
+            //int age = 17;
+
+            //if (age < 0)
+            //    Console.WriteLine("Invalid age");
+            //else
+            //    Console.WriteLine((age >= 18) ? "Eligible to vote" : "Not eligible to vote");
+
+
+
+            //string role = "Manager";
+            //decimal salary = 3000;
+            //decimal bonus;
+
+            //switch (role.ToLower())
+            //{
+            //    case "manager":
+            //        bonus = (salary > 2500) ? salary * 0.15m : salary * 0.1m;
+            //        break;
+            //    case "developer":
+            //        bonus = (salary > 2000) ? salary * 0.12m : salary * 0.08m;
+            //        break;
+            //    default:
+            //        bonus = salary * 0.05m;
+            //        break;
+            //}
+
+            //Console.WriteLine($"Role: {role}, Bonus: {bonus}");
 
 
 
