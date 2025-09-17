@@ -1,6 +1,4 @@
-﻿
-
-#region CLASSWORK
+﻿#region CLASSWORK
 
 
 
@@ -170,3 +168,124 @@
 #endregion
 
 
+#region HOMEWORK
+
+//for while do while foreach
+
+
+//for (int i = 1; i <= 10; i++)
+//{
+//    Console.Write(i + " ");
+//}
+
+
+//int sum = 0;
+//for (int i = 1; i <= 100; i++)
+//{
+//    sum += i;
+//}
+
+//Console.WriteLine(sum);
+
+
+//for (int i = 1; i <= 20; i++)
+//{
+//    if (i % 2 != 0)
+//        Console.WriteLine(i);
+//}
+
+
+//for (int i = 1; i <= 9; i++)
+//{
+//    for (int j = 1; j <= 9; j++)
+//    {
+//        Console.WriteLine($"{i} * {j} = {i * j}");
+//        //Console.WriteLine(i + " " + "*" + j + " " + "=" + " " + i * j);
+//        //Console.WriteLine("{0} * {1} = {2}", i, j, i * j);
+//    }
+//}
+
+
+//for (int i = 10; i >= 1; i--)
+//{
+//    Console.WriteLine(i);
+//}
+
+
+//int number = 5;
+//int factorial = 1;
+
+//for (int i = 1; i <= number; i++)
+//{
+//    factorial *= i;
+//}
+
+//Console.WriteLine($"Factorial: {factorial}");
+
+
+//int sum = 0;
+//int i = 1;
+
+
+//while (sum < 50)
+//{
+//    sum += i;
+//    i++;
+//}
+
+//Console.WriteLine(sum);
+
+
+//const string correctPassword = "123";
+//string password = string.Empty;
+
+//do
+//{
+//    Console.Write("Password: ");
+//    password = Console.ReadLine();
+//}
+//while (password != correctPassword);
+
+
+//string[] names = ["nika", "giorgi", "daviti"];
+
+//foreach (var name in names)
+//{
+//    Console.WriteLine(name);
+//}
+
+
+
+//PALINDROME
+//int number = 232;
+//int reversed = 0;
+//int temp = number;
+
+//while (temp > 0)
+//{
+//    int digit = temp % 10;
+//    reversed = reversed * 10 + digit;
+//    temp /= 10;
+//}
+
+//if (number == reversed)
+//    Console.WriteLine("Palindrome");
+//else
+//    Console.WriteLine("Not Palindrome");
+
+
+//long number = 100;
+//long a = 0;
+//long b = 1;
+
+//for (int i = 0; i < number; i++)
+//{
+//    long t = a + b;
+//    a = b;
+//    b = t;
+
+//    Console.WriteLine(t);
+//}
+
+
+#endregion
