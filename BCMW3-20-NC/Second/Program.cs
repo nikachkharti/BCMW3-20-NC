@@ -165,6 +165,16 @@
 
 //}
 
+//int number1 = int.Parse(Console.ReadLine());
+//bool parsedSuccessfully = int.TryParse(Console.ReadLine(), out int number1);
+
+//var x = 1; //int
+//var y = 2.1; //double
+//var m = 2.2f; //float
+//var u = 1.11m; //decimal
+//var z = "hello"; //string
+
+
 #endregion
 
 
@@ -332,8 +342,8 @@
 
 //try
 //{
-    //int x = int.Parse(firstNumber); // 15
-    //int y = x / 0;
+//int x = int.Parse(firstNumber); // 15
+//int y = x / 0;
 //}
 //catch (Exception ex)
 //{
@@ -354,3 +364,6 @@
 
 
 #endregion
+
+
+Console.ReadLine();
