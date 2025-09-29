@@ -42,9 +42,30 @@
 
             //var result = text.CompareTo(text2); //0  1  -1
 
-            //char x = 'X';
-            //int test = x;
 
+
+            var result = CutomStartsWith("Hello World", "hello", StringComparison.OrdinalIgnoreCase);
+
+        }
+
+        static bool CutomStartsWith(string source, string value, StringComparison stringComparison)
+        {
+            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(value))
+                return false;
+
+            if (value.Length > source.Length)
+                return false;
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (stringComparison.Equals(StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!string.Equals(source[i].ToString(), value[i].ToString(), stringComparison))
+                        return false;
+                }
+            }
+
+            return true;
         }
 
     }
