@@ -1,4 +1,6 @@
-﻿namespace Five
+﻿using System.Text;
+
+namespace Five
 {
     internal class Program
     {
@@ -44,29 +46,49 @@
 
 
 
-            var result = CutomStartsWith("Hello World", "hello", StringComparison.OrdinalIgnoreCase);
+            //var result = CutomStartsWith("Hello World", "hello", StringComparison.OrdinalIgnoreCase);
+
+
+            //IMMUTABLE
+            //string result = string.Empty;
+
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    result += i;
+            //}
+
+
+            //MUTABLE
+            //StringBuilder sb = new StringBuilder();
+
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    sb.Append(i);
+            //}
+
+            //Console.WriteLine(sb.ToString());
 
         }
 
-        static bool CutomStartsWith(string source, string value, StringComparison stringComparison)
-        {
-            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(value))
-                return false;
+        //static bool CutomStartsWith(string source, string value, StringComparison stringComparison)
+        //{
+        //    if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(value))
+        //        return false;
 
-            if (value.Length > source.Length)
-                return false;
+        //    if (value.Length > source.Length)
+        //        return false;
 
-            for (int i = 0; i < value.Length; i++)
-            {
-                if (stringComparison.Equals(StringComparison.OrdinalIgnoreCase))
-                {
-                    if (!string.Equals(source[i].ToString(), value[i].ToString(), stringComparison))
-                        return false;
-                }
-            }
+        //    for (int i = 0; i < value.Length; i++)
+        //    {
+        //        if (stringComparison.Equals(StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            if (!string.Equals(source[i].ToString(), value[i].ToString(), stringComparison))
+        //                return false;
+        //        }
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
     }
 }
