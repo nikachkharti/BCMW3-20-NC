@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Eight.AccessModifiers;
+using System.Runtime.CompilerServices;
+using System.Security.Principal;
 
 namespace Seven
 {
@@ -155,12 +157,23 @@ namespace Seven
     }
 
 
+    class Ferrari : Machine
+    {
+        public Ferrari()
+        {
+            Start();
+        }
+    }
 
 
     internal class Program
     {
         static void Main(string[] args)
         {
+            Car car = new Car();
+            car.Model = "BMW";
+            car.StartEngine();
+
 
             PhyisicalClient p = new(
             "12345678901",
