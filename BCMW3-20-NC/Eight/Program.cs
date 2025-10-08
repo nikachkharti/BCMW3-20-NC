@@ -1,4 +1,6 @@
 ﻿using Eight.AccessModifiers;
+using Eight.Counter;
+using Eight.Counter.Guns;
 
 namespace Eight
 {
@@ -6,19 +8,38 @@ namespace Eight
     {
         static void Main(string[] args)
         {
-            //PUBLIC -- ღიაა ყველასთვის
-            //PRIVATE -- დახურულია ყველასთვის Native კლასის გარდა
-            //PROTECTED -- რომელსაც ვიყენებთ მხოლოდ Natvive კლასის ან მემკვიდრის შიგნით
-            //INTERNAL -- რომელსაც ვიყენებთ ყველგან მიმდინარე პროექტის - დონეზე.
-            //PROTECTED INTERNAL -- ღიაა მემკვიდრეებთან და თან სხვა პროექტის შიგნითაც
-            //PRIVATE PROTECTED -- ღიაა Native კლასში და მემკვიდრე კლასებშიც.
+            while (true)
+            {
+                try
+                {
+                    Player playerJohn = new Player("John", 5000);
 
-            Machine m = new Machine("T5");
+                    Shop shop = new();
+                    shop.ShowWeapons();
 
-            Car car = new Car();
-            car.Run();
-            car.Model = "BMW";
-            car.StartEngine();
+                    Console.Write("Enter weapon name to buy: ");
+                    string weaponName = Console.ReadLine();
+
+                    Weapon weapon = shop.GetWeapon(weaponName);
+
+                    if (weapon == null)
+                        throw new InvalidOperationException("Weapon not found in the shop");
+
+                    playerJohn.BuyWeapon(weapon);
+
+                    Console.Write("Enter weapon name to shoot: ");
+                    string shootWeapon = Console.ReadLine();
+                    playerJohn.UseWeapon(shootWeapon);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"ERROR: {ex.Message}");
+                }
+                finally
+                {
+                    Console.WriteLine($"\nGame ended.");
+                }
+            }
         }
 
     }
