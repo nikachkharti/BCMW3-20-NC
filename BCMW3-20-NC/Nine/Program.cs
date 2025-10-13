@@ -123,7 +123,7 @@ namespace Nine
         {
             throw new NotImplementedException();
         }
-    } 
+    }
     #endregion
 
 
@@ -140,7 +140,23 @@ namespace Nine
             //((IReadable)d).Read(); 
             #endregion
 
+            //const string path = @"../../../OperationLog.txt";
 
+            //Money m1 = new(100, "GEL");
+            //Money m2 = new(300, "GEL");
+
+            //var result = m1 + m2;
+            //Console.WriteLine(result);
+
+
+            //File.WriteAllText(path, result.ToString()); // ფაილში რამის ჩაწერა და ძველის გადაწერა
+            //File.AppendAllText(path, result.ToString()); // ფაილში რამის ჩაწერა და განვრცობა
+
+            //File.WriteAllLines(path, new string[] { result.ToString(), result.ToString() }); //ფაილში რამის ჩაწერა და ძველის გადაწერა
+            //File.AppendAllLines(path, new string[] { result.ToString(), result.ToString() }); // ფაილში რამის ჩაწერა და განვრცობა
+
+            //string text = File.ReadAllText(path); // ფაილის შიგთავის წაკითხვა როგორც ტექსტი
+            //string[] textArray = File.ReadAllLines(path); // ფაილის შიგთავის წაკითხვა როგორც string ების მასივი
         }
     }
 }
