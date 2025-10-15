@@ -5,6 +5,8 @@
         static void Main(string[] args)
         {
 
+            string[] data = File.ReadAllLines(@"../../../vehicles.csv");
+
             /*
                 1. უნდა შექმნათ მანქანის კლასი
 
