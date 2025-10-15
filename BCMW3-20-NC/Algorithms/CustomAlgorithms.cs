@@ -17,6 +17,10 @@ namespace Algorithms
 
             return result;
         }
+
+        /// <summary>
+        /// Selection sort
+        /// </summary>
         public static Vehicle[] Sort(Vehicle[] vehicles)
         {
             for (int i = 0; i < vehicles.Length - 1; i++)
