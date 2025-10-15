@@ -1,30 +1,18 @@
-﻿namespace Ten
+﻿using Algorithms;
+
+namespace Ten
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-
             string[] data = File.ReadAllLines(@"../../../vehicles.csv");
 
-            /*
-                1. უნდა შექმნათ მანქანის კლასი
-
-                2. უნდა დაწეროთ მეთოდი რომელიც ერთ string line - ს გარდაქმნის მანქანის ობიექტად
-                ("Dodge,Charger,4,2.2,Front-Wheel Drive,Manual 5-spd,23,27,33") => 
-                new Car(){Dodge,Charger,4,2.2,Front-Wheel Drive,Manual 5-spd,23,27,33}
-
-                3. ფაილიდან უნდა წაიკითხოთ თითოეული line
-
-                4.თითოეული line გარდაქმენით მანქანის ობიექტად, გარდაქმნილი მანქანები დაიმახსოვრეთ მასივში ან ლისტში
-             */
-
-
-
-            /*
-             1. მოძებნეთ ყველა მერსედესი
-             2. მოძებნეთ 10 ყველაზე ეკონომიური მანქანა
-             */
+            var vehicles = CustomAlgorithms.TransformToVehicles(data);
+            //var mercedeses = CustomAlgorithms.FindAllMercedeses(vehicles);
+            var sortedVehicles = CustomAlgorithms.Sort(vehicles);
+            var topTenEcoVehicles = CustomAlgorithms.Take(sortedVehicles, 60);
         }
+
     }
 }
