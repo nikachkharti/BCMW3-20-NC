@@ -17,9 +17,11 @@ namespace Twelve
             listCollection.Add(-12);
             listCollection.Add(-22);
 
-            var result =
-                CustomAlgorithms
-                .Custom_FirstOrDefault(listCollection, FirstNegativeNumber);
+            //var result =
+            //    CustomAlgorithms
+            //    .Custom_FirstOrDefault(listCollection, FirstNegativeNumber);
+
+
 
         }
 
@@ -28,7 +30,6 @@ namespace Twelve
         {
             return elementToFind < 0;
         }
-
         private static bool FirstOddElement(int elementToFind)
         {
             return elementToFind % 2 != 0;

@@ -1,4 +1,5 @@
 ﻿using Algorithms;
+using Algorithms.Models;
 
 namespace Ten
 {
@@ -8,11 +9,54 @@ namespace Ten
         {
             string[] data = File.ReadAllLines(@"../../../vehicles.csv");
 
-            var vehicles = CustomAlgorithms.TransformToVehicles(data);
-            //var mercedeses = CustomAlgorithms.FindAllMercedeses(vehicles);
-            var sortedVehicles = CustomAlgorithms.Sort(vehicles);
-            var topTenEcoVehicles = CustomAlgorithms.Take(sortedVehicles, 60);
+            var vehicles = CustomAlgorithms
+                .TransformToVehicles(data, Vehicle.Parse);
+
+            //var opels = CustomAlgorithms
+            //    .FindAll(vehicles, OpelExists);
+
+            var sortedVehicles = CustomAlgorithms
+                .Sort(vehicles, CompareNonEconomicCars);
+
+
+            var topTenEcoVehicles = CustomAlgorithms
+                .Take(sortedVehicles, 60);
+
         }
+
+
+        private static bool CompareHighway(Vehicle v1, Vehicle v2)
+        {
+            return v1.Highway < v2.Highway;
+        }
+        private static bool CompareNonEconomicCars(Vehicle v1, Vehicle v2)
+        {
+            return v1.Combined < v2.Combined;
+        }
+        private static bool CompareEconmicCars(Vehicle v1, Vehicle v2)
+        {
+            return v1.Combined > v2.Combined;
+        }
+
+        private static bool OpelExists(Vehicle vehicle)
+        {
+            return
+                vehicle.Make
+                .Contains("Opel", StringComparison.OrdinalIgnoreCase);
+        }
+        private static bool MercedesExists(Vehicle vehicle)
+        {
+            return
+                vehicle.Make
+                .Contains("Mercedes", StringComparison.OrdinalIgnoreCase);
+        }
+        private static bool BmwExists(Vehicle vehicle)
+        {
+            return
+                vehicle.Make
+                .Contains("BMW", StringComparison.OrdinalIgnoreCase);
+        }
+
 
     }
 }

@@ -6,6 +6,9 @@ namespace Algorithms
     //იმ მეთოდის მისაღებ და დასაბრუნებელ ტიპებს რომელ მეთოდსაც იგი ინიჭებს
 
     public delegate bool FindDelegate(int input);
+    public delegate Vehicle TransformerDelegate(string input);
+    public delegate bool ContainsDelegate(Vehicle input);
+    public delegate bool ComparerDelegate(Vehicle input1, Vehicle input2);
 
     public class CustomAlgorithms
     {
@@ -27,13 +30,13 @@ namespace Algorithms
         /// <summary>
         /// Selection sort
         /// </summary>
-        public static Vehicle[] Sort(Vehicle[] vehicles)
+        public static Vehicle[] Sort(Vehicle[] vehicles, ComparerDelegate comparerDelegate)
         {
             for (int i = 0; i < vehicles.Length - 1; i++)
             {
                 for (int j = i + 1; j < vehicles.Length; j++)
                 {
-                    if (vehicles[j].Combined > vehicles[i].Combined)
+                    if (comparerDelegate(vehicles[j], vehicles[i]))
                     {
                         Vehicle temp = vehicles[j];
                         vehicles[j] = vehicles[i];
@@ -44,26 +47,26 @@ namespace Algorithms
 
             return vehicles;
         }
-        public static Vehicle[] FindAllMercedeses(Vehicle[] vehicles)
+        public static Vehicle[] FindAll(Vehicle[] vehicles, ContainsDelegate containsDelegate)
         {
-            List<Vehicle> mercedeses = new();
+            List<Vehicle> result = new();
             for (int i = 0; i < vehicles.Length; i++)
             {
-                if (vehicles[i].Make.Contains("Mercedes", StringComparison.OrdinalIgnoreCase))
+                if (containsDelegate(vehicles[i]))
                 {
-                    mercedeses.Add(vehicles[i]);
+                    result.Add(vehicles[i]);
                 }
             }
 
-            return mercedeses.ToArray();
+            return result.ToArray();
         }
-        public static Vehicle[] TransformToVehicles(string[] data)
+        public static Vehicle[] TransformToVehicles(string[] data, TransformerDelegate transformer)
         {
             Vehicle[] vehicles = new Vehicle[data.Length];
 
             for (int i = 0; i < data.Length; i++)
             {
-                vehicles[i] = Vehicle.Parse(data[i]);
+                vehicles[i] = transformer(data[i]);
             }
 
             return vehicles;
