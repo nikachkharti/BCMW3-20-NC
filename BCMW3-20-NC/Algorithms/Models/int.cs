@@ -1,6 +1,6 @@
 ﻿namespace Algorithms.Models
 {
-    public class Vehicle
+    public class @int
     {
         public string Make { get; set; }
         public string Model { get; set; }
@@ -12,14 +12,14 @@
         public byte Combined { get; set; }
         public byte Highway { get; set; }
 
-        public static Vehicle Parse(string input)
+        public static @int Parse(string input)
         {
             string[] data = input.Split(',');
 
             if (data.Length != 9)
                 throw new FormatException("Invalid input");
 
-            Vehicle result = new();
+            @int result = new();
 
             result.Make = data[0];
             result.Model = data[1];
@@ -33,5 +33,6 @@
 
             return result;
         }
+
     }
 }

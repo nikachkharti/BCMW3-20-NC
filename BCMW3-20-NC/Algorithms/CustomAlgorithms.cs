@@ -97,7 +97,35 @@ namespace Algorithms
 
             return default;
         }
+        public static T[] Sort<T>(T[] collection) where T : IComparable<T>
+        {
+            for (int i = 0; i < collection.Length - 1; i++)
+            {
+                for (int j = i + 1; j < collection.Length; j++)
+                {
+                    if (collection[j].CompareTo(collection[i]) < 0)
+                    {
+                        T temp = collection[j];
+                        collection[j] = collection[i];
+                        collection[i] = temp;
+                    }
+                }
+            }
 
+            return collection;
+        }
+        public static int Custom_IndexOf<T>(List<T> collection, FindDelegate<T> findDelegate)
+        {
+            for (int i = 0; i < collection.Count; i++)
+            {
+                if (findDelegate(collection[i]))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
 
 
 
@@ -143,12 +171,6 @@ namespace Algorithms
         }
 
          */
-
-
-
-
-        //მინდა რომ დამიწეროთ Custom_IndexOf მეთოდი რომელიც იმუშავებს List - ებისთვის და იმუშავებს
-        //დელეგატის + Generic გამოყენებთ
 
     }
 }
