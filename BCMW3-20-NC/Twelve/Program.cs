@@ -17,9 +17,9 @@ namespace Twelve
             listCollection.Add(-12);
             listCollection.Add(-22);
 
-            var result =
-                CustomAlgorithms
-                .Custom_FirstOrDefault(listCollection, number => number < 0);
+            //var result =
+            //    CustomAlgorithms
+            //    .Custom_FirstOrDefault(listCollection, number => number < 0);
         }
 
 

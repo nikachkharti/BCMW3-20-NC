@@ -10,14 +10,14 @@ namespace Ten
             string[] data = File.ReadAllLines(@"../../../vehicles.csv");
 
             var vehicles = CustomAlgorithms
-                .TransformToVehicles(data, Vehicle.Parse);
+                .CustomSelect(data, Vehicle.Parse);
 
-            var opels =
-                CustomAlgorithms
-                .FindAll(vehicles, v => v.Make.Contains("Opel", StringComparison.OrdinalIgnoreCase));
+            //var opels =
+            //    CustomAlgorithms
+            //    .FindAll(vehicles, v => v.Make.Contains("Opel", StringComparison.OrdinalIgnoreCase));
 
-            var sortedVehicles = CustomAlgorithms.Sort(vehicles, (Vehicle v1, Vehicle v2) => v1.Combined < v2.Combined);
-            var topTenEcoVehicles = CustomAlgorithms.Take(sortedVehicles, 60);
+            //var sortedVehicles = CustomAlgorithms.Sort(vehicles, (Vehicle v1, Vehicle v2) => v1.Combined < v2.Combined);
+            //var topTenEcoVehicles = CustomAlgorithms.Take(sortedVehicles, 60);
 
 
         }

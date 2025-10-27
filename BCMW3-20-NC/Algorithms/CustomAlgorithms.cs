@@ -1,83 +1,85 @@
 ﻿using Algorithms.Models;
 namespace Algorithms
 {
+    #region DELEGATES 1
     //დელეგატი არის ტიპი რომელსაც შეუძლია მიინიჭოს მეთოდი
     //დელეგატის სტრუქტურა ზუსტად უნდა ემთხვეოდეს
     //იმ მეთოდის მისაღებ და დასაბრუნებელ ტიპებს რომელ მეთოდსაც იგი ინიჭებს
 
-    public delegate bool FindDelegate<T>(T input);
-    public delegate Vehicle TransformerDelegate(string input);
-    public delegate bool ContainsDelegate(Vehicle input);
-    public delegate bool ComparerDelegate(Vehicle input1, Vehicle input2);
+
+    //public delegate Vehicle TransformerDelegate(string input);
+    //public delegate bool ContainsDelegate(Vehicle input);
+    //public delegate bool ComparerDelegate(Vehicle input1, Vehicle input2);
+    #endregion
+
+
+    #region DELEGATES 2
+
+    //Action -> არის დელეგატის ტიპი რომელიც ინიჭებს ისეთ ფუნქციას რომელიც აბრუნებს void - ს
+    //Func -> არის დელეგატის ტიპი რომელიც ინიჭებს ისეთ ფუნქციას რომელსაც აქვს ჩვენთვის სასურველი დასაბრუნებელი და მისაღები პარამეტრი
+    //Predicate -> არის დელეგატის ტიპი რომელიც ინიჭებს ისეთ ფუნქციას რომლის დასაბრუნებელი ტიპი არის კონკრეტულად bool
+
+    #endregion
+
+
+    /*
+•	Reverse აბრუნებს გადაცემული მასივის შეტრიალებულ ვარიანტს
+•	Sort აბრუნებს გადაცემული მასივის დალაგებულ ვარიანტს
+•	Any აბრუნებს true თუ მასივის რომელიმე ელემენტი ემთხვევა მოსაძებნად  გადაცემულ ელემენტებს
+•	All აბრუნებს true თუ მასივის ყველა ელემენტი ემთხვევა მოსაძებნად  გადაცემულ ელემენტებს
+•	FirstOrDefault მასივში მოძებნის გადაცემული რიცხვის პირველივე მნიშვნელობას თუ არ მოიძებნა დააბრუნებს default - ს
+•	LastOrDefault მასივში მოძებნის გადაცემული რიცხვის ბოლო მნიშვნელობას თუ არ მოიძებნა დააბრუნებს default - ს
+•	FindAll მოძებნის და დააბრუნებს მასივის ყველა იმ ელემენტს რომელიც გადაცემულია მოსაძებნად 
+•	FindIndex მასივში მოძებნის გადაცემული რიცხვის პირველივე მნიშვნელობის ინდექსს თუ არ მოიძებნა დააბრუნებს -1
+•	FindLastIndex მასივში მოძებნის გადაცემული რიცხვის ბოლო მნიშვნელობის ინდექსს თუ არ მოიძებნა დააბრუნებს -1
+•	Sum შეკრებს მასივის ყველა ელემენტს.
+     
+     
+     */
+
 
     public class CustomAlgorithms
     {
-        public static Vehicle[] Take(Vehicle[] vehicles, int quantity)
+        public static T[] CustomTake<T>(T[] array, int quantity)
         {
-            if (quantity > vehicles.Length)
-                throw new ArgumentException("Quantity can't exceed vehicles length");
-
-            Vehicle[] result = new Vehicle[quantity];
+            T[] result = new T[quantity];
 
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = vehicles[i];
+                result[i] = array[i];
             }
 
             return result;
         }
-
-        /// <summary>
-        /// Selection sort
-        /// </summary>
-        public static Vehicle[] Sort(Vehicle[] vehicles, ComparerDelegate comparerDelegate)
+        public static TDestination[] CustomSelect<TSource, TDestination>(TSource[] data, Func<TSource, TDestination> selector)
         {
-            for (int i = 0; i < vehicles.Length - 1; i++)
+            TDestination[] result = new TDestination[data.Length];
+
+            for (int i = 0; i < data.Length; i++)
             {
-                for (int j = i + 1; j < vehicles.Length; j++)
-                {
-                    if (comparerDelegate(vehicles[j], vehicles[i]))
-                    {
-                        Vehicle temp = vehicles[j];
-                        vehicles[j] = vehicles[i];
-                        vehicles[i] = temp;
-                    }
-                }
+                result[i] = selector(data[i]);
             }
 
-            return vehicles;
+            return result;
         }
-        public static Vehicle[] FindAll(Vehicle[] vehicles, ContainsDelegate containsDelegate)
+        public static T[] CustomFindAll<T>(T[] array, Func<T, bool> predicate)
         {
-            List<Vehicle> result = new();
-            for (int i = 0; i < vehicles.Length; i++)
+            List<T> result = new();
+            for (int i = 0; i < array.Length; i++)
             {
-                if (containsDelegate(vehicles[i]))
+                if (predicate(array[i]))
                 {
-                    result.Add(vehicles[i]);
+                    result.Add(array[i]);
                 }
             }
 
             return result.ToArray();
         }
-        public static Vehicle[] TransformToVehicles(string[] data, TransformerDelegate transformer)
-        {
-            Vehicle[] vehicles = new Vehicle[data.Length];
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                vehicles[i] = transformer(data[i]);
-            }
-
-            return vehicles;
-        }
-
-
-        public static T CustomFirstOrDefault<T>(List<T> listCollection, FindDelegate<T> findDelegate)
+        public static T CustomFirstOrDefault<T>(List<T> listCollection, Func<T, bool> predicate)
         {
             for (int i = 0; i < listCollection.Count; i++)
             {
-                if (findDelegate(listCollection[i]))
+                if (predicate(listCollection[i]))
                 {
                     return listCollection[i];
                 }
@@ -85,11 +87,11 @@ namespace Algorithms
 
             return default;
         }
-        public static T Custom_FirstOrDefault<T>(T[] arrayCollection, FindDelegate<T> findDelegate)
+        public static T CustomFirstOrDefault<T>(T[] arrayCollection, Predicate<T> predicate)
         {
             for (int i = 0; i < arrayCollection.Length; i++)
             {
-                if (findDelegate(arrayCollection[i]))
+                if (predicate(arrayCollection[i]))
                 {
                     return arrayCollection[i];
                 }
@@ -97,13 +99,13 @@ namespace Algorithms
 
             return default;
         }
-        public static T[] Sort<T>(T[] collection) where T : IComparable<T>
+        public static T[] CustomSort<T>(T[] collection, Func<T, T, bool> comparer)
         {
             for (int i = 0; i < collection.Length - 1; i++)
             {
                 for (int j = i + 1; j < collection.Length; j++)
                 {
-                    if (collection[j].CompareTo(collection[i]) < 0)
+                    if (comparer(collection[j], collection[i]))
                     {
                         T temp = collection[j];
                         collection[j] = collection[i];
@@ -114,11 +116,11 @@ namespace Algorithms
 
             return collection;
         }
-        public static int Custom_IndexOf<T>(List<T> collection, FindDelegate<T> findDelegate)
+        public static int CustomIndexOf<T>(List<T> collection, Func<T, bool> predicate)
         {
             for (int i = 0; i < collection.Count; i++)
             {
-                if (findDelegate(collection[i]))
+                if (predicate(collection[i]))
                 {
                     return i;
                 }
@@ -128,14 +130,17 @@ namespace Algorithms
         }
 
 
+        
+
+
 
         /*
          
-        public static int Custom_FirstOrDefault(List<int> stringCollection, FindDelegate findDelegate)
+        public static int Custom_FirstOrDefault(List<int> stringCollection, FindDelegate predicate)
         {
             for (int i = 0; i < stringCollection.Count; i++)
             {
-                if (findDelegate(stringCollection[i]))
+                if (predicate(stringCollection[i]))
                 {
                     return stringCollection[i];
                 }
@@ -143,11 +148,11 @@ namespace Algorithms
 
             return default;
         }
-        public static int Custom_FirstOrDefault(int[] arrayCollection, FindDelegate findDelegate)
+        public static int Custom_FirstOrDefault(int[] arrayCollection, FindDelegate predicate)
         {
             for (int i = 0; i < arrayCollection.Length; i++)
             {
-                if (findDelegate(arrayCollection[i]))
+                if (predicate(arrayCollection[i]))
                 {
                     return arrayCollection[i];
                 }
@@ -155,7 +160,7 @@ namespace Algorithms
 
             return default;
         }
-        public static int Custom_FirstOrDefault(Dictionary<int, int> dictionaryCollection, FindDelegate findDelegate)
+        public static int Custom_FirstOrDefault(Dictionary<int, int> dictionaryCollection, FindDelegate predicate)
         {
             var keys = new List<int>(dictionaryCollection.Keys);
 
@@ -163,7 +168,7 @@ namespace Algorithms
             {
                 int key = keys[i];
 
-                if (findDelegate(dictionaryCollection[key]))
+                if (predicate(dictionaryCollection[key]))
                     return dictionaryCollection[key];
             }
 
