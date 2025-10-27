@@ -5,7 +5,7 @@ namespace Algorithms
     //დელეგატის სტრუქტურა ზუსტად უნდა ემთხვეოდეს
     //იმ მეთოდის მისაღებ და დასაბრუნებელ ტიპებს რომელ მეთოდსაც იგი ინიჭებს
 
-    public delegate bool FindDelegate(int input);
+    public delegate bool FindDelegate<T>(T input);
     public delegate Vehicle TransformerDelegate(string input);
     public delegate bool ContainsDelegate(Vehicle input);
     public delegate bool ComparerDelegate(Vehicle input1, Vehicle input2);
@@ -72,13 +72,44 @@ namespace Algorithms
             return vehicles;
         }
 
-        public static int Custom_FirstOrDefault(List<int> listCollection, FindDelegate findDelegate)
+
+        public static T CustomFirstOrDefault<T>(List<T> listCollection, FindDelegate<T> findDelegate)
         {
             for (int i = 0; i < listCollection.Count; i++)
             {
                 if (findDelegate(listCollection[i]))
                 {
                     return listCollection[i];
+                }
+            }
+
+            return default;
+        }
+        public static T Custom_FirstOrDefault<T>(T[] arrayCollection, FindDelegate<T> findDelegate)
+        {
+            for (int i = 0; i < arrayCollection.Length; i++)
+            {
+                if (findDelegate(arrayCollection[i]))
+                {
+                    return arrayCollection[i];
+                }
+            }
+
+            return default;
+        }
+
+
+
+
+        /*
+         
+        public static int Custom_FirstOrDefault(List<int> stringCollection, FindDelegate findDelegate)
+        {
+            for (int i = 0; i < stringCollection.Count; i++)
+            {
+                if (findDelegate(stringCollection[i]))
+                {
+                    return stringCollection[i];
                 }
             }
 
@@ -111,9 +142,13 @@ namespace Algorithms
             return default;
         }
 
+         */
+
+
+
 
         //მინდა რომ დამიწეროთ Custom_IndexOf მეთოდი რომელიც იმუშავებს List - ებისთვის და იმუშავებს
-        //დელეგატის გამოყენებით
+        //დელეგატის + Generic გამოყენებთ
 
     }
 }
