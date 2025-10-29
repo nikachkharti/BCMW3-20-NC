@@ -1,38 +1,79 @@
-﻿using TinyBank.Repository.Interfaces;
+﻿using System.Text.Json;
+using TinyBank.Repository.Interfaces;
 using TinyBank.Repository.Models;
 
 namespace TinyBank.Repository.Implementations
 {
     public class AccountRepository : IAccountRepository
     {
+        private readonly string _filePath;
+        private readonly List<Account> _accounts;
+
+        public AccountRepository(string filePath)
+        {
+            _filePath = filePath;
+            _accounts = LoadData();
+        }
+
+        public List<Account> GetAccounts() => _accounts;
+        public Account GetSingleAccount(int id) => _accounts.FirstOrDefault(a => a.Id == id);
+        public List<Account> GetAccountsOfCustomer(int customerId) => _accounts
+                .Where(a => a.CustomerId == customerId)
+                .ToList();
         public int AddAccount(Account newAccount)
         {
-            throw new NotImplementedException();
-        }
+            newAccount.Id = _accounts.Any() ? _accounts.Max(c => c.Id) + 1 : 1;
+            _accounts.Add(newAccount);
+            SaveData();
 
+            return newAccount.Id;
+        }
         public int DeleteAccount(int id)
         {
-            throw new NotImplementedException();
-        }
+            var account = _accounts.FirstOrDefault(a => a.Id == id);
 
-        public List<Account> GetAccounts()
-        {
-            throw new NotImplementedException();
-        }
+            _accounts.Remove(account);
+            SaveData();
 
-        public List<Account> GetAccountsOfCustomer(int customerId)
-        {
-            throw new NotImplementedException();
+            return account.Id;
         }
-
-        public Account GetSingleAccount(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public int UpdateAccount(Account account)
         {
-            throw new NotImplementedException();
+            var index = _accounts.FindIndex(a => a.Id == account.Id);
+
+            if (index >= 0)
+            {
+                _accounts[index] = account;
+                SaveData();
+            }
+
+            return account.Id;
         }
+
+
+        #region HELPERS
+
+        //წაკითხვა
+        private List<Account> LoadData()
+        {
+            if (!File.Exists(_filePath))
+                return new List<Account>();
+
+            var accounts = FromJson(File.ReadAllText(_filePath));
+            return accounts ?? new List<Account>();
+        }
+
+        private List<Account> FromJson(string line) =>
+            JsonSerializer.Deserialize<List<Account>>(line, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+
+        //ჩაწერა
+        private string ToJson(List<Account> accounts) =>
+            JsonSerializer.Serialize(accounts, new JsonSerializerOptions { WriteIndented = true });
+
+        private void SaveData() => File.WriteAllText(_filePath, ToJson(_accounts));
+
+        #endregion
+
     }
 }
