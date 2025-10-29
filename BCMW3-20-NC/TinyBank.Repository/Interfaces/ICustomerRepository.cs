@@ -7,7 +7,7 @@ namespace TinyBank.Repository.Interfaces
         List<Customer> GetCustomers();
         Customer GetSingleCustomer(int id);
         int AddCustomer(Customer newCustomer);
-        int UpdateCustomer(Customer newCustomer);
+        int UpdateCustomer(Customer customer);
         int DeleteCustomer(int id);
     }
 }
