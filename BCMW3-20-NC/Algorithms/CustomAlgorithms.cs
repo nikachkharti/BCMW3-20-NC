@@ -1,4 +1,5 @@
 ﻿using Algorithms.Models;
+using System.Collections;
 namespace Algorithms
 {
     #region DELEGATES 1
@@ -51,54 +52,54 @@ namespace Algorithms
 
             return result;
         }
-        public static TDestination[] CustomSelect<TSource, TDestination>(TSource[] data, Func<TSource, TDestination> selector)
-        {
-            TDestination[] result = new TDestination[data.Length];
 
-            for (int i = 0; i < data.Length; i++)
+        public static IEnumerable<TDestination> CustomSelect<TSource, TDestination>(IEnumerable<TSource> src, Func<TSource, TDestination> selector)
+        {
+            List<TDestination> result = new();
+
+            foreach (var item in src)
             {
-                result[i] = selector(data[i]);
+                result.Add(selector(item));
+            }
+            return result;
+        }
+        public static IEnumerable<T> CustomFindAll<T>(IEnumerable<T> src, Func<T, bool> predicate)
+        {
+            List<T> result = new();
+
+            foreach (var item in src)
+            {
+                if (predicate(item))
+                {
+                    result.Add(item);
+                }
             }
 
             return result;
         }
-        public static T[] CustomFindAll<T>(T[] array, Func<T, bool> predicate)
+        public static T CustomFirstOrDefault<T>(IEnumerable<T> src, Predicate<T> predicate)
         {
-            List<T> result = new();
-            for (int i = 0; i < array.Length; i++)
+            foreach (var item in src)
             {
-                if (predicate(array[i]))
+                if (predicate(item))
                 {
-                    result.Add(array[i]);
-                }
-            }
-
-            return result.ToArray();
-        }
-        public static T CustomFirstOrDefault<T>(List<T> listCollection, Func<T, bool> predicate)
-        {
-            for (int i = 0; i < listCollection.Count; i++)
-            {
-                if (predicate(listCollection[i]))
-                {
-                    return listCollection[i];
+                    return item;
                 }
             }
 
             return default;
         }
-        public static T CustomFirstOrDefault<T>(T[] arrayCollection, Predicate<T> predicate)
+        public static void CustomForeach<T>(IEnumerable<T> source)
         {
-            for (int i = 0; i < arrayCollection.Length; i++)
-            {
-                if (predicate(arrayCollection[i]))
-                {
-                    return arrayCollection[i];
-                }
-            }
+            IEnumerator enumerator = source.GetEnumerator();
 
-            return default;
+            while (enumerator.MoveNext())
+            {
+                Console.WriteLine(enumerator.Current);
+            }
         }
+
+
         public static T[] CustomSort<T>(T[] collection, Func<T, T, bool> comparer)
         {
             for (int i = 0; i < collection.Length - 1; i++)
@@ -116,66 +117,18 @@ namespace Algorithms
 
             return collection;
         }
-        public static int CustomIndexOf<T>(List<T> collection, Func<T, bool> predicate)
+        public static int CustomIndexOf<T>(IEnumerable<T> src, Func<T, bool> predicate)
         {
-            for (int i = 0; i < collection.Count; i++)
+            int i = 0;
+            foreach (var item in src)
             {
-                if (predicate(collection[i]))
-                {
+                if (predicate(item))
                     return i;
-                }
+                i++;
             }
 
             return -1;
         }
-
-
-        
-
-
-
-        /*
-         
-        public static int Custom_FirstOrDefault(List<int> stringCollection, FindDelegate predicate)
-        {
-            for (int i = 0; i < stringCollection.Count; i++)
-            {
-                if (predicate(stringCollection[i]))
-                {
-                    return stringCollection[i];
-                }
-            }
-
-            return default;
-        }
-        public static int Custom_FirstOrDefault(int[] arrayCollection, FindDelegate predicate)
-        {
-            for (int i = 0; i < arrayCollection.Length; i++)
-            {
-                if (predicate(arrayCollection[i]))
-                {
-                    return arrayCollection[i];
-                }
-            }
-
-            return default;
-        }
-        public static int Custom_FirstOrDefault(Dictionary<int, int> dictionaryCollection, FindDelegate predicate)
-        {
-            var keys = new List<int>(dictionaryCollection.Keys);
-
-            for (int i = 0; i < keys.Count; i++)
-            {
-                int key = keys[i];
-
-                if (predicate(dictionaryCollection[key]))
-                    return dictionaryCollection[key];
-            }
-
-            return default;
-        }
-
-         */
 
     }
 }
