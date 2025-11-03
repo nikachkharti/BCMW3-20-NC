@@ -52,7 +52,6 @@ namespace Algorithms
 
             return result;
         }
-
         public static IEnumerable<TDestination> CustomSelect<TSource, TDestination>(IEnumerable<TSource> src, Func<TSource, TDestination> selector)
         {
             List<TDestination> result = new();
@@ -98,8 +97,6 @@ namespace Algorithms
                 Console.WriteLine(enumerator.Current);
             }
         }
-
-
         public static T[] CustomSort<T>(T[] collection, Func<T, T, bool> comparer)
         {
             for (int i = 0; i < collection.Length - 1; i++)
@@ -128,6 +125,17 @@ namespace Algorithms
             }
 
             return -1;
+        }
+        public static IEnumerable<T> CustomDistinct<T>(IEnumerable<T> src, IEqualityComparer<T> comparer = default)
+        {
+            HashSet<T> set = new(comparer);
+
+            foreach (var item in src)
+            {
+                set.Add(item);
+            }
+
+            return set;
         }
 
     }
