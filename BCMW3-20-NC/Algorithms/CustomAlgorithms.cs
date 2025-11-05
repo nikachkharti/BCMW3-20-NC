@@ -60,16 +60,25 @@ namespace Algorithms
                 yield return selector(item);
             }
         }
+
+
         public static IEnumerable<T> CustomWhere<T>(this IEnumerable<T> src, Func<T, bool> predicate)
+        {
+            ArgumentNullException.ThrowIfNull(src);
+            ArgumentNullException.ThrowIfNull(predicate);
+
+            return WhereImpl(src, predicate);
+        }
+        private static IEnumerable<T> WhereImpl<T>(IEnumerable<T> src, Func<T, bool> predicate)
         {
             foreach (var item in src)
             {
                 if (predicate(item))
-                {
                     yield return item;
-                }
             }
         }
+
+
 
         public static T CustomFirstOrDefault<T>(this IEnumerable<T> src, Predicate<T> predicate)
         {
