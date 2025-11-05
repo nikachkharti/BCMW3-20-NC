@@ -10,7 +10,7 @@ namespace Sixteen
         {
             //LINQ : Linq query | Extension Methods
 
-            //List<string> data = new List<string>() { "1", "2", "3", "-1", "-2" };
+            List<string> data = new List<string>() { "1", "2", "3", "-1", "-2" };
 
             //var x = data
             //    .Select(int.Parse)
@@ -18,6 +18,14 @@ namespace Sixteen
             //    .Where(x => x < 0)
             //    .FirstOrDefault(x => x % 2 == 0);
 
+
+            var y =
+                (from d in data
+                 let x = int.Parse(d)
+                 where x < 0
+                 orderby x
+                 select x
+                 ).FirstOrDefault(x => x % 2 == 0);
 
 
             //var x = data
@@ -45,6 +53,8 @@ namespace Sixteen
 
             //List<int> intList = new() { 11, 12, 7, 33, 21, -88, 351, 12131, 345, 22, 22 };
             //var result = intList.CustomDistinct();
+
+
 
 
         }
