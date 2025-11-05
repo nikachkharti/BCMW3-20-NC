@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyBank.Console", "TinyBan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fifteen", "Fifteen\Fifteen.csproj", "{5DE64E6D-79A5-45D4-8858-11AF1C808C7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sixteen", "Sixteen\Sixteen.csproj", "{3D2A7809-C251-4B00-98B5-7549B7BE3A47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,10 @@ Global
 		{5DE64E6D-79A5-45D4-8858-11AF1C808C7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DE64E6D-79A5-45D4-8858-11AF1C808C7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DE64E6D-79A5-45D4-8858-11AF1C808C7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2A7809-C251-4B00-98B5-7549B7BE3A47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2A7809-C251-4B00-98B5-7549B7BE3A47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2A7809-C251-4B00-98B5-7549B7BE3A47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2A7809-C251-4B00-98B5-7549B7BE3A47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

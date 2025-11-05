@@ -1,5 +1,6 @@
 ﻿using Algorithms.Models;
 using System.Collections;
+using System.Reflection.Emit;
 namespace Algorithms
 {
     #region DELEGATES 1
@@ -39,7 +40,7 @@ namespace Algorithms
      */
 
 
-    public class CustomAlgorithms
+    public static class CustomAlgorithms
     {
         public static T[] CustomTake<T>(T[] array, int quantity)
         {
@@ -52,7 +53,7 @@ namespace Algorithms
 
             return result;
         }
-        public static IEnumerable<TDestination> CustomSelect<TSource, TDestination>(IEnumerable<TSource> src, Func<TSource, TDestination> selector)
+        public static IEnumerable<TDestination> CustomSelect<TSource, TDestination>(this IEnumerable<TSource> src, Func<TSource, TDestination> selector)
         {
             List<TDestination> result = new();
 
@@ -62,7 +63,7 @@ namespace Algorithms
             }
             return result;
         }
-        public static IEnumerable<T> CustomFindAll<T>(IEnumerable<T> src, Func<T, bool> predicate)
+        public static IEnumerable<T> CustomWhere<T>(this IEnumerable<T> src, Func<T, bool> predicate)
         {
             List<T> result = new();
 
@@ -76,7 +77,7 @@ namespace Algorithms
 
             return result;
         }
-        public static T CustomFirstOrDefault<T>(IEnumerable<T> src, Predicate<T> predicate)
+        public static T CustomFirstOrDefault<T>(this IEnumerable<T> src, Predicate<T> predicate)
         {
             foreach (var item in src)
             {
@@ -88,7 +89,7 @@ namespace Algorithms
 
             return default;
         }
-        public static void CustomForeach<T>(IEnumerable<T> source)
+        public static void CustomForeach<T>(this IEnumerable<T> source)
         {
             IEnumerator enumerator = source.GetEnumerator();
 
@@ -97,11 +98,11 @@ namespace Algorithms
                 Console.WriteLine(enumerator.Current);
             }
         }
-        public static T[] CustomSort<T>(T[] collection, Func<T, T, bool> comparer)
+        public static IList<T> CustomOrderBy<T>(this IList<T> collection, Func<T, T, bool> comparer)
         {
-            for (int i = 0; i < collection.Length - 1; i++)
+            for (int i = 0; i < collection.Count - 1; i++)
             {
-                for (int j = i + 1; j < collection.Length; j++)
+                for (int j = i + 1; j < collection.Count; j++)
                 {
                     if (comparer(collection[j], collection[i]))
                     {
@@ -114,7 +115,7 @@ namespace Algorithms
 
             return collection;
         }
-        public static int CustomIndexOf<T>(IEnumerable<T> src, Func<T, bool> predicate)
+        public static int CustomIndexOf<T>(this IEnumerable<T> src, Func<T, bool> predicate)
         {
             int i = 0;
             foreach (var item in src)
@@ -126,7 +127,7 @@ namespace Algorithms
 
             return -1;
         }
-        public static IEnumerable<T> CustomDistinct<T>(IEnumerable<T> src, IEqualityComparer<T> comparer = default)
+        public static IEnumerable<T> CustomDistinct<T>(this IEnumerable<T> src, IEqualityComparer<T> comparer = default)
         {
             HashSet<T> set = new(comparer);
 
@@ -136,6 +137,13 @@ namespace Algorithms
             }
 
             return set;
+        }
+        public static List<T> CustomToList<T>(this IEnumerable<T> src)
+        {
+            List<T> list = new List<T>();
+            list.AddRange(src);
+
+            return list;
         }
 
     }
