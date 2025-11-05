@@ -55,47 +55,39 @@ namespace Algorithms
         }
         public static IEnumerable<TDestination> CustomSelect<TSource, TDestination>(this IEnumerable<TSource> src, Func<TSource, TDestination> selector)
         {
-            List<TDestination> result = new();
-
             foreach (var item in src)
             {
-                result.Add(selector(item));
+                yield return selector(item);
             }
-            return result;
         }
         public static IEnumerable<T> CustomWhere<T>(this IEnumerable<T> src, Func<T, bool> predicate)
         {
-            List<T> result = new();
-
             foreach (var item in src)
             {
                 if (predicate(item))
                 {
-                    result.Add(item);
+                    yield return item;
                 }
             }
-
-            return result;
         }
+
         public static T CustomFirstOrDefault<T>(this IEnumerable<T> src, Predicate<T> predicate)
         {
             foreach (var item in src)
             {
                 if (predicate(item))
-                {
                     return item;
-                }
             }
 
             return default;
         }
-        public static void CustomForeach<T>(this IEnumerable<T> source)
+        public static IEnumerable<T> CustomForeach<T>(this IEnumerable<T> source)
         {
-            IEnumerator enumerator = source.GetEnumerator();
+            IEnumerator<T> enumerator = source.GetEnumerator();
 
             while (enumerator.MoveNext())
             {
-                Console.WriteLine(enumerator.Current);
+                yield return enumerator.Current;
             }
         }
         public static IList<T> CustomOrderBy<T>(this IList<T> collection, Func<T, T, bool> comparer)
@@ -129,21 +121,17 @@ namespace Algorithms
         }
         public static IEnumerable<T> CustomDistinct<T>(this IEnumerable<T> src, IEqualityComparer<T> comparer = default)
         {
-            HashSet<T> set = new(comparer);
+            HashSet<T> result = new HashSet<T>(comparer);
 
             foreach (var item in src)
             {
-                set.Add(item);
+                if (result.Add(item))
+                    yield return item;
             }
-
-            return set;
         }
         public static List<T> CustomToList<T>(this IEnumerable<T> src)
         {
-            List<T> list = new List<T>();
-            list.AddRange(src);
-
-            return list;
+            return new List<T>(src);
         }
 
     }

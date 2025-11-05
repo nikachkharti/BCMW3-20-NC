@@ -1,4 +1,6 @@
 ﻿using Algorithms;
+using System.Collections;
+using System.Threading.Channels;
 
 namespace Sixteen
 {
@@ -8,10 +10,7 @@ namespace Sixteen
         {
             //LINQ : Linq query | Extension Methods
 
-
-            List<string> data = new List<string>() { "1", "2", "3", "-1", "-2" };
-            HashSet<string> testSet = new();
-
+            //List<string> data = new List<string>() { "1", "2", "3", "-1", "-2" };
 
             //var x = data
             //    .Select(int.Parse)
@@ -21,12 +20,12 @@ namespace Sixteen
 
 
 
-            var x = data
-                .CustomSelect(int.Parse)
-                .CustomToList()
-                .CustomOrderBy((x, y) => x < y)
-                .CustomWhere(x => x < 0)
-                .CustomFirstOrDefault(x => x % 2 == 0);
+            //var x = data
+            //    .CustomSelect(int.Parse)
+            //    .CustomToList()
+            //    .CustomOrderBy((x, y) => x < y)
+            //    .CustomWhere(x => x < 0)
+            //    .CustomFirstOrDefault(x => x % 2 == 0);
 
 
             #region OBSOLOTE
@@ -42,6 +41,12 @@ namespace Sixteen
             //var finalResult = CustomAlgorithms
             //    .CustomFirstOrDefault(filteredData, x => x % 2 == 0); 
             #endregion
+
+
+            //List<int> intList = new() { 11, 12, 7, 33, 21, -88, 351, 12131, 345, 22, 22 };
+            //var result = intList.CustomDistinct();
+
+
         }
     }
 }
