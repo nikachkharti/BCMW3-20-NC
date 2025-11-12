@@ -6,5 +6,23 @@ namespace Twenty.WinformsApp
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Thread t1 = new Thread(() => SetLabel("Hello From Button 1", 8000));
+            t1.Start();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Thread t2 = new Thread(() => SetLabel("Hello From Button 2", 2000));
+            t2.Start();
+        }
+
+        private void SetLabel(string text, int delay)
+        {
+            Thread.Sleep(delay);
+            messageLabel.Text = text;
+        }
     }
 }
