@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "First", "First\First.csproj", "{DBFFBA1C-05ED-4713-973E-752A9AE22F32}"
 EndProject
@@ -48,6 +48,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithms.Tests", "Algorithms.Tests\Algorithms.Tests.csproj", "{BB05D322-A7E0-47F1-AD11-CD41370EE9DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seventeen", "Seventeen\Seventeen.csproj", "{1B96F486-CF4F-4DD8-83F8-C92F2192DAF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twenty.ConsoleApp", "Twenty.ConsoleApp\Twenty.ConsoleApp.csproj", "{C89C5D3C-9367-4805-BEB3-2ECAF2D6E01A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twenty.WinformsApp", "Twenty.WinformsApp\Twenty.WinformsApp.csproj", "{71D63DAB-FAA8-4C58-9A67-98878F6160C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,6 +147,14 @@ Global
 		{1B96F486-CF4F-4DD8-83F8-C92F2192DAF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B96F486-CF4F-4DD8-83F8-C92F2192DAF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B96F486-CF4F-4DD8-83F8-C92F2192DAF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C89C5D3C-9367-4805-BEB3-2ECAF2D6E01A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C89C5D3C-9367-4805-BEB3-2ECAF2D6E01A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C89C5D3C-9367-4805-BEB3-2ECAF2D6E01A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C89C5D3C-9367-4805-BEB3-2ECAF2D6E01A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71D63DAB-FAA8-4C58-9A67-98878F6160C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71D63DAB-FAA8-4C58-9A67-98878F6160C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71D63DAB-FAA8-4C58-9A67-98878F6160C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71D63DAB-FAA8-4C58-9A67-98878F6160C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
