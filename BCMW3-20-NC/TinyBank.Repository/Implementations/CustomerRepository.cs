@@ -1,4 +1,5 @@
-﻿using TinyBank.Repository.Interfaces;
+﻿using System.Text;
+using TinyBank.Repository.Interfaces;
 using TinyBank.Repository.Models;
 
 namespace TinyBank.Repository.Implementations
@@ -52,24 +53,28 @@ namespace TinyBank.Repository.Implementations
         //წაკითხვა
         private List<Customer> LoadData()
         {
-            if (!File.Exists(_filePath))
-                return new List<Customer>();
-
             var customers = new List<Customer>();
 
-            // Read all lines at once
-            var lines = File.ReadAllLines(_filePath);
-
-            if (lines.Length <= 1)
+            if (!File.Exists(_filePath))
                 return customers;
 
-            // Skip the header line
-            for (int i = 1; i < lines.Length; i++)
+            using (var fs = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                var customer = FromCsv(lines[i]);
+                using (var ms = new MemoryStream())
+                {
+                    fs.CopyTo(ms);
+                    ms.Position = 0;
 
-                if (customer != null) // skip invalid lines
-                    customers.Add(customer);
+                    var content = Encoding.UTF8.GetString(ms.ToArray());
+                    var lines = content.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+                    for (int i = 1; i < lines.Length; i++) // skip header
+                    {
+                        var customer = FromCsv(lines[i]);
+                        if (customer != null)
+                            customers.Add(customer);
+                    }
+                }
             }
 
             return customers;
@@ -98,6 +103,7 @@ namespace TinyBank.Repository.Implementations
         //ჩაწერა
         private void SaveData()
         {
+            // Prepare CSV content in memory
             var lines = new List<string>()
             {
                 "Id,Name,IdentityNumber,PhoneNumber,Email,CustomerType"
@@ -108,9 +114,20 @@ namespace TinyBank.Repository.Implementations
                 lines.Add(ToCsv(customer));
             }
 
-            // Overwrite the file
-            File.WriteAllLines(_filePath, lines);
+            // Join lines with proper newlines
+            string csvContent = string.Join(Environment.NewLine, lines);
+
+            // Convert string to bytes (UTF-8)
+            byte[] buffer = Encoding.UTF8.GetBytes(csvContent);
+
+            // Overwrite the file with FileStream
+            using (var fs = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                fs.Write(buffer, 0, buffer.Length);
+                fs.Flush(); // ensure data is written to disk
+            }
         }
+
         private string ToCsv(Customer customer) => $"{customer.Id},{customer.Name},{customer.IdentityNumber},{customer.PhoneNumber},{customer.Email},{Convert.ToInt32(customer.CustomerType)}".Trim();
 
         #endregion

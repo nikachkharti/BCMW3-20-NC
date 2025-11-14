@@ -1,6 +1,9 @@
-﻿using System.Text.Json;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using TinyBank.Repository.Interfaces;
 using TinyBank.Repository.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TinyBank.Repository.Implementations
 {
@@ -59,8 +62,15 @@ namespace TinyBank.Repository.Implementations
             if (!File.Exists(_filePath))
                 return new List<Account>();
 
-            var accounts = FromJson(File.ReadAllText(_filePath));
-            return accounts ?? new List<Account>();
+            using (FileStream fs = new(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                byte[] buffer = new byte[fs.Length];
+                fs.ReadExactly(buffer);
+                string json = Encoding.UTF8.GetString(buffer);
+
+                var accounts = FromJson(json);
+                return accounts ?? new List<Account>();
+            }
         }
 
         private List<Account> FromJson(string line) =>
@@ -71,7 +81,18 @@ namespace TinyBank.Repository.Implementations
         private string ToJson(List<Account> accounts) =>
             JsonSerializer.Serialize(accounts, new JsonSerializerOptions { WriteIndented = true });
 
-        private void SaveData() => File.WriteAllText(_filePath, ToJson(_accounts));
+        private void SaveData()
+        {
+            //File.WriteAllText(_filePath, ToJson(_accounts));
+            var jsonPayload = ToJson(_accounts);
+
+            using (FileStream fs = new(_filePath, FileMode.Create, FileAccess.Write))
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(jsonPayload);
+                fs.Write(bytes, 0, bytes.Length);
+            }
+
+        }
 
         #endregion
 
