@@ -7,8 +7,40 @@ namespace TwentyOne.ConsoleApp
         static void Main(string[] args)
         {
 
+
+
+
+
+
+
+
         }
 
+
+        #region 4.1 Unwrap
+
+        /*
+
+        using var httpClient = new HttpClient();
+        var firstClient =
+            httpClient.GetStringAsync("https://dattebayo-api.onrender.com/clans") //Task 1
+            .ContinueWith(task => //Task 2
+            {
+                return Task.Run(() => //Task 3
+                {
+                    var json = task.Result;
+                    using var doc = JsonDocument.Parse(json);
+                    var root = doc.RootElement;
+                    var clans = root.GetProperty("clans");
+                    var firstClan = clans[0];
+
+                    return firstClan;
+                });
+            }).Unwrap(); //Unwrap - იღებს Task<Task<T>> და აბრუნებს Task<T>
+
+         */
+
+        #endregion
 
         #region 4 ContinueWith, თან მოვძებნოთ რომელი კლანი არის პირველი API Response - ში.
         //როგორც მივხვდით Task.Result ბლოკავს მთავარ ნაკადს სანამ ტასკი არ დასრულდება.
