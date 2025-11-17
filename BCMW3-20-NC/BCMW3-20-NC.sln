@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11205.157 d18.0
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "First", "First\First.csproj", "{DBFFBA1C-05ED-4713-973E-752A9AE22F32}"
 EndProject
@@ -56,6 +56,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twenty.ConsoleApp", "Twenty.ConsoleApp\Twenty.ConsoleApp.csproj", "{9F073370-41F8-4D22-94DD-7A4662D513D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twenty.WinformsApp", "Twenty.WinformsApp\Twenty.WinformsApp.csproj", "{23777BEB-6116-4914-A809-ACDF762557C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwentyOne.ConsoleApp", "TwentyOne.ConsoleApp\TwentyOne.ConsoleApp.csproj", "{DCB09625-DD79-4577-BF4C-59DC2C6C12FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -167,6 +169,10 @@ Global
 		{23777BEB-6116-4914-A809-ACDF762557C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23777BEB-6116-4914-A809-ACDF762557C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23777BEB-6116-4914-A809-ACDF762557C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCB09625-DD79-4577-BF4C-59DC2C6C12FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCB09625-DD79-4577-BF4C-59DC2C6C12FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCB09625-DD79-4577-BF4C-59DC2C6C12FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCB09625-DD79-4577-BF4C-59DC2C6C12FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
