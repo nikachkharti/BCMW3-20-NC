@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<Nullable>disable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\TinyBank.Data\TinyBank.Data.csproj" />
+	  <ProjectReference Include="..\TinyBank.Repository\TinyBank.Repository.csproj" />
+	  <ProjectReference Include="..\TinyBank.Service\TinyBank.Service.csproj" />
+	</ItemGroup>
+
+</Project>
