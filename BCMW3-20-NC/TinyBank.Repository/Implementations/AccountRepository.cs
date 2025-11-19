@@ -16,41 +16,21 @@ namespace TinyBank.Repository.Implementations
             _accounts = accounts;
         }
 
-
         /// <summary>
-        /// Factroy method async constructor
+        /// Async factory method
         /// </summary>
         public static async Task<AccountRepository> CreateAsync(string filePath)
         {
             var accounts = new List<Account>();
 
-            if (File.Exists(filePath))
+            await foreach (var acc in LoadDataAsync(filePath))
             {
-                using var fs = new FileStream(
-                    filePath,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read,
-                    bufferSize: 8192,
-                    useAsync: true);
-
-                using var ms = new MemoryStream();
-                await fs.CopyToAsync(ms);
-
-                ms.Position = 0;
-                string json = Encoding.UTF8.GetString(ms.ToArray());
-
-                var deserialized = JsonSerializer.Deserialize<List<Account>>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-                if (deserialized != null)
-                    accounts.AddRange(deserialized);
+                accounts.Add(acc);
             }
 
             return new AccountRepository(filePath, accounts);
         }
+
 
         public List<Account> GetAccounts() => _accounts;
         public Account GetSingleAccount(int id)
@@ -67,8 +47,7 @@ namespace TinyBank.Repository.Implementations
         public async Task<int> DeleteAccountAsync(int id)
         {
             var account = _accounts.FirstOrDefault(a => a.Id == id);
-            if (account == null)
-                return -1;
+            if (account == null) return -1;
 
             _accounts.Remove(account);
             await SaveDataAsync();
@@ -86,26 +65,49 @@ namespace TinyBank.Repository.Implementations
         }
 
 
-        #region HELPERS
 
+        #region HELPERS
+        public static async IAsyncEnumerable<Account> LoadDataAsync(string filePath)
+        {
+            if (!File.Exists(filePath))
+                yield break;
+
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 8192, useAsync: true);
+            using var ms = new MemoryStream();
+            await fs.CopyToAsync(ms);
+            ms.Position = 0;
+
+            var json = Encoding.UTF8.GetString(ms.ToArray());
+
+            List<Account> deserialized = null;
+            try
+            {
+                deserialized = JsonSerializer.Deserialize<List<Account>>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch
+            {
+                yield break; // invalid JSON
+            }
+
+            if (deserialized == null) yield break;
+
+            foreach (var account in deserialized)
+            {
+                yield return account;
+            }
+        }
         private async Task SaveDataAsync()
         {
             var jsonPayload = JsonSerializer.Serialize(_accounts, new JsonSerializerOptions { WriteIndented = true });
 
-            using var fs = new FileStream(
-                _filePath,
-                FileMode.Create,
-                FileAccess.Write,
-                FileShare.None,
-                bufferSize: 8192,
-                useAsync: true);
-
-            byte[] bytes = Encoding.UTF8.GetBytes(jsonPayload);
+            using var fs = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, useAsync: true);
+            var bytes = Encoding.UTF8.GetBytes(jsonPayload);
             await fs.WriteAsync(bytes, 0, bytes.Length);
             await fs.FlushAsync();
         }
-
         #endregion
-
     }
 }
