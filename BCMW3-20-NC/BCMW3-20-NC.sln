@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwentyOne.ConsoleApp", "Twe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyBank.WinformsApp", "TinyBank.WinformsApp\TinyBank.WinformsApp.csproj", "{E101D600-8961-4D7C-9B52-2F11AFDADCF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMLConsoleApp", "XMLConsoleApp\XMLConsoleApp.csproj", "{1F560DD9-67BF-4C47-BBF9-2ED1784A14AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -173,6 +175,10 @@ Global
 		{E101D600-8961-4D7C-9B52-2F11AFDADCF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E101D600-8961-4D7C-9B52-2F11AFDADCF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E101D600-8961-4D7C-9B52-2F11AFDADCF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F560DD9-67BF-4C47-BBF9-2ED1784A14AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F560DD9-67BF-4C47-BBF9-2ED1784A14AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F560DD9-67BF-4C47-BBF9-2ED1784A14AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F560DD9-67BF-4C47-BBF9-2ED1784A14AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
