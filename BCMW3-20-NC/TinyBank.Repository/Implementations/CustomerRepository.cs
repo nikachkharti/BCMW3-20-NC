@@ -9,39 +9,51 @@ namespace TinyBank.Repository.Implementations
         private readonly string _filePath;
         private readonly List<Customer> _customers;
 
-        public CustomerRepository(string filePath)
+        private CustomerRepository(string filePath, List<Customer> customers)
         {
             _filePath = filePath;
-            _customers = LoadData();
+            _customers = customers;
         }
 
+        /// <summary>
+        /// Factory Method async constructor
+        /// </summary>
+        public static async Task<CustomerRepository> CreateAsync(string filePath)
+        {
+            var customers = new List<Customer>();
+
+            await foreach (var customer in LoadDataAsync(filePath))
+                customers.Add(customer);
+
+            return new CustomerRepository(filePath, customers);
+        }
         public List<Customer> GetCustomers() => _customers;
         public Customer GetSingleCustomer(int id) => _customers.FirstOrDefault(c => c.Id == id);
-        public int AddCustomer(Customer newCustomer)
+        public async Task<int> AddCustomerAsync(Customer newCustomer)
         {
             newCustomer.Id = _customers.Any() ? _customers.Max(c => c.Id) + 1 : 1;
             _customers.Add(newCustomer);
-            SaveData();
+            await SaveDataAsync();
 
             return newCustomer.Id;
         }
-        public int DeleteCustomer(int id)
+        public async Task<int> DeleteCustomerAsync(int id)
         {
             var customer = _customers.FirstOrDefault(c => c.Id == id);
 
             _customers.Remove(customer);
-            SaveData();
+            await SaveDataAsync();
 
             return customer.Id;
         }
-        public int UpdateCustomer(Customer customer)
+        public async Task<int> UpdateCustomerAsync(Customer customer)
         {
             var index = _customers.FindIndex(c => c.Id == customer.Id);
 
             if (index >= 0)
             {
                 _customers[index] = customer;
-                SaveData();
+                await SaveDataAsync();
             }
 
             return customer.Id;
@@ -51,85 +63,84 @@ namespace TinyBank.Repository.Implementations
         #region HELPERS
 
         //წაკითხვა
-        private List<Customer> LoadData()
+        private static async IAsyncEnumerable<Customer> LoadDataAsync(string filePath)
         {
-            var customers = new List<Customer>();
+            if (!File.Exists(filePath))
+                yield break;
 
-            if (!File.Exists(_filePath))
-                return customers;
+            using var fs = new FileStream(
+                filePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 4096,
+                useAsync: true);
 
-            using (var fs = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using var reader = new StreamReader(fs);
+
+            bool headerSkipped = false;
+
+            while (!reader.EndOfStream)
             {
-                using (var ms = new MemoryStream())
+                var line = await reader.ReadLineAsync();
+
+                if (!headerSkipped)
                 {
-                    fs.CopyTo(ms);
-                    ms.Position = 0;
-
-                    var content = Encoding.UTF8.GetString(ms.ToArray());
-                    var lines = content.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-
-                    for (int i = 1; i < lines.Length; i++) // skip header
-                    {
-                        var customer = FromCsv(lines[i]);
-                        if (customer != null)
-                            customers.Add(customer);
-                    }
+                    headerSkipped = true;
+                    continue; // skip header
                 }
+
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                var customer = FromCsv(line);
+                if (customer != null)
+                    yield return customer;
             }
-
-            return customers;
         }
-        private Customer FromCsv(string customer)
+        private static Customer FromCsv(string line)
         {
-            var separatedCustomer = customer
-                .Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var parts = line.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            Customer result = new();
-
-            if (separatedCustomer.Length != 6)
+            if (parts.Length != 6)
                 throw new FormatException("Customer format is invalid");
 
-            result.Id = int.Parse(separatedCustomer[0]);
-            result.Name = separatedCustomer[1];
-            result.IdentityNumber = separatedCustomer[2];
-            result.PhoneNumber = separatedCustomer[3];
-            result.Email = separatedCustomer[4];
-            result.CustomerType = Enum.Parse<CustomerType>(separatedCustomer[5]);
-
-            return result;
+            return new Customer
+            {
+                Id = int.Parse(parts[0]),
+                Name = parts[1],
+                IdentityNumber = parts[2],
+                PhoneNumber = parts[3],
+                Email = parts[4],
+                CustomerType = Enum.Parse<CustomerType>(parts[5])
+            };
         }
-
 
         //ჩაწერა
-        private void SaveData()
+        private async Task SaveDataAsync()
         {
-            // Prepare CSV content in memory
-            var lines = new List<string>()
-            {
-                "Id,Name,IdentityNumber,PhoneNumber,Email,CustomerType"
-            };
+            using var fs = new FileStream(
+                _filePath,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.None,
+                bufferSize: 4096,
+                useAsync: true);
 
+            using var writer = new StreamWriter(fs, Encoding.UTF8);
+
+            // header
+            await writer.WriteLineAsync("Id,Name,IdentityNumber,PhoneNumber,Email,CustomerType");
+
+            // write rows
             foreach (var customer in _customers)
             {
-                lines.Add(ToCsv(customer));
+                await writer.WriteLineAsync(ToCsv(customer));
             }
 
-            // Join lines with proper newlines
-            string csvContent = string.Join(Environment.NewLine, lines);
-
-            // Convert string to bytes (UTF-8)
-            byte[] buffer = Encoding.UTF8.GetBytes(csvContent);
-
-            // Overwrite the file with FileStream
-            using (var fs = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                fs.Write(buffer, 0, buffer.Length);
-                fs.Flush(); // ensure data is written to disk
-            }
+            await writer.FlushAsync();
         }
-
-        private string ToCsv(Customer customer) => $"{customer.Id},{customer.Name},{customer.IdentityNumber},{customer.PhoneNumber},{customer.Email},{Convert.ToInt32(customer.CustomerType)}".Trim();
-
+        private static string ToCsv(Customer customer) => $"{customer.Id},{customer.Name},{customer.IdentityNumber},{customer.PhoneNumber},{customer.Email},{customer.CustomerType}";
         #endregion
 
     }

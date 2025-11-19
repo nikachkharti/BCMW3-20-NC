@@ -1,4 +1,5 @@
-﻿using TinyBank.Repository.Models;
+﻿using TinyBank.Repository.Implementations;
+using TinyBank.Repository.Models;
 
 namespace TinyBank.Repository.Interfaces
 {
@@ -6,8 +7,8 @@ namespace TinyBank.Repository.Interfaces
     {
         List<Customer> GetCustomers();
         Customer GetSingleCustomer(int id);
-        int AddCustomer(Customer newCustomer);
-        int UpdateCustomer(Customer customer);
-        int DeleteCustomer(int id);
+        Task<int> AddCustomerAsync(Customer newCustomer);
+        Task<int> UpdateCustomerAsync(Customer customer);
+        Task<int> DeleteCustomerAsync(int id);
     }
 }
