@@ -68,12 +68,13 @@ namespace TinyBank.Repository.Implementations
             if (!File.Exists(filePath))
                 yield break;
 
+            //FileStream კითხულობს მონაცემებს buffer - ებად, ანუ ნაწილ-ნაწილ
             using var fs = new FileStream(
                 filePath,
                 FileMode.Open,
                 FileAccess.Read,
                 FileShare.Read,
-                bufferSize: 4096,
+                bufferSize: 4096, //4096 (4 KB) buffer - ის default ზომა
                 useAsync: true);
 
             using var reader = new StreamReader(fs);
@@ -119,12 +120,13 @@ namespace TinyBank.Repository.Implementations
         //ჩაწერა
         private async Task SaveDataAsync()
         {
+            //FileStream წერს მონაცემებს buffer - ებად, ანუ ნაწილ-ნაწილ
             using var fs = new FileStream(
                 _filePath,
                 FileMode.Create,
                 FileAccess.Write,
                 FileShare.None,
-                bufferSize: 4096,
+                bufferSize: 4096, //4096 (4 KB) buffer - ის default ზომა
                 useAsync: true);
 
             using var writer = new StreamWriter(fs, Encoding.UTF8);
@@ -134,11 +136,9 @@ namespace TinyBank.Repository.Implementations
 
             // write rows
             foreach (var customer in _customers)
-            {
                 await writer.WriteLineAsync(ToCsv(customer));
-            }
 
-            await writer.FlushAsync();
+            await writer.FlushAsync(); //„მეხსიერების ბუფერებში ამჟამად შენახული ნებისმიერი მონაცემის იძულებით ჩაწერა ძირითად მოწყობილობაზე (დისკზე).“
         }
         private static string ToCsv(Customer customer) => $"{customer.Id},{customer.Name},{customer.IdentityNumber},{customer.PhoneNumber},{customer.Email},{customer.CustomerType}";
         #endregion
