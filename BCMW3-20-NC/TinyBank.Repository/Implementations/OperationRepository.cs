@@ -58,16 +58,16 @@ namespace TinyBank.Repository.Implementations
 
             XDocument xdoc;
             try
-            {
+        {
                 xdoc = XDocument.Load(ms);
-            }
+        }
             catch
             {
                 yield break; // malformed XML
             }
 
             foreach (var el in xdoc.Root?.Elements("Operation") ?? Enumerable.Empty<XElement>())
-            {
+        {
                 var operation = new Operation
                 {
                     Id = (int)el.Element("Id")!,
@@ -79,7 +79,7 @@ namespace TinyBank.Repository.Implementations
                 };
 
                 yield return operation;
-            }
+        }
         }
 
         /// <summary>
