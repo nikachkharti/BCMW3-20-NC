@@ -17,7 +17,7 @@ namespace TinyBank.Service.Helpers
                     t.IsClass &&
                     t.IsPublic &&
                     !t.IsAbstract &&
-                    t.GetCustomAttributes(typeof(DtoTransformable), inherit: false).Any())
+                    t.GetCustomAttributes(typeof(DtoTransformable), inherit: false).Length != 0)
                 .ToList();
 
             entityTypes.ForEach(async entity => await GenerateDtosForEntities(entity, outputFolder));
