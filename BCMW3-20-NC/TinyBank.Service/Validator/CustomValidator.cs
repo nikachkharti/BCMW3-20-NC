@@ -1,15 +1,14 @@
-﻿using TinyBank.Service.Attributes;
+﻿using System.Reflection;
+using TinyBank.Service.Attributes;
 
 namespace TinyBank.Service.Validator
 {
     public static class CustomValidator
     {
-        /// <summary>
-        /// CustomRequired validator
-        /// </summary>
-        public static List<string> ValidateRequired(object obj)
+        public static List<string> Validate(object obj)
         {
             var errors = new List<string>();
+
             if (obj == null)
             {
                 errors.Add("Object cannot be null.");
@@ -21,48 +20,70 @@ namespace TinyBank.Service.Validator
 
             foreach (var prop in properties)
             {
-                bool isRequired = prop.IsDefined(typeof(CustomRequired), true);
-                if (!isRequired) continue;
-
                 var value = prop.GetValue(obj);
 
-                if (value == null)
+                // ---------------------------
+                //  REQUIRED
+                // ---------------------------
+                if (prop.IsDefined(typeof(CustomRequired), true))
                 {
-                    errors.Add($"{prop.Name} is required.");
-                    continue;
-                }
+                    if (value == null)
+                    {
+                        errors.Add($"{prop.Name} is required.");
+                        continue;
+                    }
 
-                // String
-                if (prop.PropertyType == typeof(string))
-                {
-                    if (string.IsNullOrWhiteSpace((string)value))
+                    if (prop.PropertyType == typeof(string) &&
+                        string.IsNullOrWhiteSpace((string)value))
+                    {
                         errors.Add($"{prop.Name} cannot be empty.");
-                    continue;
+                        continue;
+                    }
+
+                    if (prop.PropertyType.IsEnum)
+                    {
+                        var defaultEnum = Activator.CreateInstance(prop.PropertyType);
+
+                        if (value.Equals(defaultEnum))
+                            errors.Add($"{prop.Name} must be a valid enum value.");
+                    }
+
+                    if (prop.PropertyType.IsValueType)
+                    {
+                        var defaultValue = Activator.CreateInstance(prop.PropertyType);
+                        if (value.Equals(defaultValue))
+                            errors.Add($"{prop.Name} cannot be default value.");
+                    }
                 }
 
-                // Enum
-                if (prop.PropertyType.IsEnum)
+                // ---------------------------
+                //  MIN LENGTH
+                // ---------------------------
+                var minLengthAttr = prop.GetCustomAttribute<CustomMinLength>(true);
+                if (minLengthAttr != null && value != null)
                 {
-                    // check default (0)
-                    var defaultEnum = Activator.CreateInstance(prop.PropertyType);
-
-                    if (value.Equals(defaultEnum))
-                        errors.Add($"{prop.Name} must be a valid enum value.");
-                    continue;
+                    if (prop.PropertyType == typeof(string))
+                    {
+                        if (((string)value).Length < minLengthAttr.Length)
+                            errors.Add($"{prop.Name} must be at least {minLengthAttr.Length} characters.");
+                    }
                 }
 
-                // Value types (int, decimal, etc.)
-                if (prop.PropertyType.IsValueType)
+                // ---------------------------
+                //  MAX LENGTH
+                // ---------------------------
+                var maxLengthAttr = prop.GetCustomAttribute<CustomMaxLength>(true);
+                if (maxLengthAttr != null && value != null)
                 {
-                    var defaultValue = Activator.CreateInstance(prop.PropertyType);
-                    if (value.Equals(defaultValue))
-                        errors.Add($"{prop.Name} cannot be default value.");
+                    if (prop.PropertyType == typeof(string))
+                    {
+                        if (((string)value).Length > maxLengthAttr.Length)
+                            errors.Add($"{prop.Name} must be no longer than {maxLengthAttr.Length} characters.");
+                    }
                 }
             }
 
             return errors;
         }
-
-
     }
 }

@@ -5,9 +5,13 @@ namespace TinyBank.Service.Dtos;
 public class AccountForCreatingDto
 {
     [CustomRequired]
+    [CustomMinLength(22)]
+    [CustomMaxLength(22)]
     public String Iban { get; set; }
 
     [CustomRequired]
+    [CustomMinLength(3)]
+    [CustomMaxLength(3)]
     public String Currency { get; set; }
 
     [CustomRequired]
