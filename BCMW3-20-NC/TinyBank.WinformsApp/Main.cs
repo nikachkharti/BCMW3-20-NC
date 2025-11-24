@@ -21,7 +21,7 @@ namespace TinyBank.WinformsApp
 
         private async void Main_Load(object sender, EventArgs e)
         {
-            await GenerateDtoClasses();
+            //await GenerateDtoClasses();
         }
 
 
