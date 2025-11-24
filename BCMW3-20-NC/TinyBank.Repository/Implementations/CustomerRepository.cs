@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using TinyBank.Repository.Interfaces;
 using TinyBank.Repository.Models;
+using TinyBank.Repository.Models.Enums;
 
 namespace TinyBank.Repository.Implementations
 {

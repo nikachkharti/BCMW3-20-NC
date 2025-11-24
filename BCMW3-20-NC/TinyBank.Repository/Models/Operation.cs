@@ -1,5 +1,9 @@
-﻿namespace TinyBank.Repository.Models
+﻿using TinyBank.Repository.Attributes;
+using TinyBank.Repository.Models.Enums;
+
+namespace TinyBank.Repository.Models
 {
+    [DtoTransformable]
     public class Operation
     {
         public int Id { get; set; }
