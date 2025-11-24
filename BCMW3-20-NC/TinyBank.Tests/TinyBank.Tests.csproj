@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+		<Nullable>disable</Nullable>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
@@ -15,9 +15,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\TinyBank.Data\TinyBank.Data.csproj" />
-	  <ProjectReference Include="..\TinyBank.Repository\TinyBank.Repository.csproj" />
-	  <ProjectReference Include="..\TinyBank.Service\TinyBank.Service.csproj" />
+		<ProjectReference Include="..\TinyBank.Data\TinyBank.Data.csproj" />
+		<ProjectReference Include="..\TinyBank.Repository\TinyBank.Repository.csproj" />
+		<ProjectReference Include="..\TinyBank.Service\TinyBank.Service.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
