@@ -16,7 +16,9 @@ namespace TinyBank.Repository.Implementations
             _customers = customers;
         }
 
-        //Factroy
+        /// <summary>
+        /// Factory Method async constructor
+        /// </summary>
         public static async Task<CustomerRepository> CreateAsync(string filePath)
         {
             var customers = new List<Customer>();
@@ -26,7 +28,6 @@ namespace TinyBank.Repository.Implementations
 
             return new CustomerRepository(filePath, customers);
         }
-
         public List<Customer> GetCustomers() => _customers;
         public Customer GetSingleCustomer(int id) => _customers.FirstOrDefault(c => c.Id == id);
         public async Task<int> AddCustomerAsync(Customer newCustomer)
@@ -68,14 +69,14 @@ namespace TinyBank.Repository.Implementations
             if (!File.Exists(filePath))
                 yield break;
 
-            //FileStream კითხულობს მონაცემებს buffer - ებად, ანუ ნაწილ - ნაწილ
+            //FileStream კითხულობს მონაცემებს buffer - ებად, ანუ ნაწილ-ნაწილ
             using var fs = new FileStream(
-                    filePath,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read,
-                    bufferSize: 4096,//4KB default ზომა,
-                    useAsync: true);
+                filePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 4096, //4096 (4 KB) buffer - ის default ზომა
+                useAsync: true);
 
             using var reader = new StreamReader(fs);
 
@@ -84,69 +85,63 @@ namespace TinyBank.Repository.Implementations
             while (!reader.EndOfStream)
             {
                 var line = await reader.ReadLineAsync();
+
                 if (!headerSkipped)
                 {
                     headerSkipped = true;
-                    continue; //skip header
+                    continue; // skip header
                 }
 
                 if (string.IsNullOrWhiteSpace(line))
-                    continue; //skip line
+                    continue;
 
                 var customer = FromCsv(line);
-
                 if (customer != null)
                     yield return customer;
             }
         }
-
-
-        private static Customer FromCsv(string customer)
+        private static Customer FromCsv(string line)
         {
-            var separatedCustomer = customer
-                .Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var parts = line.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            Customer result = new();
-
-            if (separatedCustomer.Length != 6)
+            if (parts.Length != 6)
                 throw new FormatException("Customer format is invalid");
 
-            result.Id = int.Parse(separatedCustomer[0]);
-            result.Name = separatedCustomer[1];
-            result.IdentityNumber = separatedCustomer[2];
-            result.PhoneNumber = separatedCustomer[3];
-            result.Email = separatedCustomer[4];
-            result.CustomerType = Enum.Parse<CustomerType>(separatedCustomer[5]);
-
-            return result;
+            return new Customer
+            {
+                Id = int.Parse(parts[0]),
+                Name = parts[1],
+                IdentityNumber = parts[2],
+                PhoneNumber = parts[3],
+                Email = parts[4],
+                CustomerType = Enum.Parse<CustomerType>(parts[5])
+            };
         }
-
 
         //ჩაწერა
         private async Task SaveDataAsync()
         {
-            //FileStream კითხულობს მონაცემებს buffer - ებად, ანუ ნაწილ - ნაწილ
+            //FileStream წერს მონაცემებს buffer - ებად, ანუ ნაწილ-ნაწილ
             using var fs = new FileStream(
-                    _filePath,
-                    FileMode.Create,
-                    FileAccess.Write,
-                    FileShare.None,
-                    bufferSize: 4096,//4KB default ზომა,
-                    useAsync: true);
+                _filePath,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.None,
+                bufferSize: 4096, //4096 (4 KB) buffer - ის default ზომა
+                useAsync: true);
 
             using var writer = new StreamWriter(fs, Encoding.UTF8);
 
-            //header
-            await writer.WriteAsync("Id,Name,IdentityNumber,PhoneNumber,Email,CustomerType");
+            // header
+            await writer.WriteLineAsync("Id,Name,IdentityNumber,PhoneNumber,Email,CustomerType");
 
+            // write rows
             foreach (var customer in _customers)
-                await writer.WriteAsync(ToCsv(customer));
+                await writer.WriteLineAsync(ToCsv(customer));
 
-            await writer.FlushAsync();
+            await writer.FlushAsync(); //„მეხსიერების ბუფერებში ამჟამად შენახული ნებისმიერი მონაცემის იძულებით ჩაწერა ძირითად მოწყობილობაზე (დისკზე).“
         }
-
-        private static string ToCsv(Customer customer) => $"{customer.Id},{customer.Name},{customer.IdentityNumber},{customer.PhoneNumber},{customer.Email},{Convert.ToInt32(customer.CustomerType)}".Trim();
-
+        private static string ToCsv(Customer customer) => $"{customer.Id},{customer.Name},{customer.IdentityNumber},{customer.PhoneNumber},{customer.Email},{customer.CustomerType}";
         #endregion
 
     }

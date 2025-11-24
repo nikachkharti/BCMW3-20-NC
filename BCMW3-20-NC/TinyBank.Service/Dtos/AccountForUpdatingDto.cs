@@ -23,6 +23,5 @@ public class AccountForUpdatingDto
 
     [CustomRequired]
     public Int32 CustomerId { get; set; }
-
     public String Destination { get; set; }
 }

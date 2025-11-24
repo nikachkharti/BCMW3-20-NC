@@ -1,4 +1,5 @@
-﻿using TinyBank.Repository.Models;
+﻿using TinyBank.Repository.Implementations;
+using TinyBank.Repository.Models;
 
 namespace TinyBank.Repository.Interfaces
 {

@@ -4,10 +4,10 @@ namespace TinyBank.Service.Dtos;
 
 public class CustomerForGettingDto
 {
-	public Int32 Id { get; set; }
-	public String Name { get; set; }
-	public String IdentityNumber { get; set; }
-	public String PhoneNumber { get; set; }
-	public String Email { get; set; }
-	public CustomerType CustomerType { get; set; }
+	 public Int32 Id { get; set; }
+	 public String Name { get; set; }
+	 public String IdentityNumber { get; set; }
+	 public String PhoneNumber { get; set; }
+	 public String Email { get; set; }
+	 public CustomerType CustomerType { get; set; }
 }

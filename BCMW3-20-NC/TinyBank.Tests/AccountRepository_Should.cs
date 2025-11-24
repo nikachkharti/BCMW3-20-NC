@@ -9,40 +9,40 @@ namespace TinyBank.Tests
         private readonly string _testFilePath = @"../../../../TinyBank.Tests/Data/Accounts.json";
 
         [Fact]
-        public void Get_All_Accounts()
+        public async Task Get_All_Accounts()
         {
-            //Arrange
-            var repository = new AccountRepository(_testFilePath);
+            // Arrange
+            var repository = await AccountRepository.CreateAsync(_testFilePath);
             var expectedCount = 30;
 
-            //Act
+            // Act
             var accounts = repository.GetAccounts();
 
-            //Assert
-            //Assert.Equal(expectedCount, accounts.Count());
+            // Assert
+            Assert.Equal(expectedCount, accounts.Count());
         }
 
         [Fact]
-        public void Get_Empty_List_If_No_Accounts()
+        public async Task Get_Empty_List_If_No_Accounts()
         {
-            //Arrange
-            var repository = new AccountRepository(_testFilePath);
+            // Arrange
+            var repository = await AccountRepository.CreateAsync(_testFilePath);
             var expectedCount = 0;
 
-            //Act
+            // Act
             var accounts = repository.GetAccounts().ToArray();
             Array.Resize(ref accounts, 0);
 
-            //Assert
+            // Assert
             Assert.Equal(expectedCount, accounts.Length);
             Assert.Empty(accounts);
         }
 
         [Fact]
-        public void Get_Single_Account()
+        public async Task Get_Single_Account()
         {
-            //Arrange
-            var repository = new AccountRepository(_testFilePath);
+            // Arrange
+            var repository = await AccountRepository.CreateAsync(_testFilePath);
             var expected = new Account()
             {
                 Id = 1,
@@ -53,19 +53,19 @@ namespace TinyBank.Tests
                 Destination = null
             };
 
-            //Act
+            // Act
             var actual = repository.GetSingleAccount(1);
 
-            //Assert
+            // Assert
             Assert.Equal(expected, actual, new AccountEquilityComparer());
         }
 
         [Fact]
-        public void Add_Account()
+        public async Task Add_Account()
         {
-            //Arrange
-            var repository = new AccountRepository(_testFilePath);
-            var expected = 31;
+            // Arrange
+            var repository = await AccountRepository.CreateAsync(_testFilePath);
+
             var maxId = repository.GetAccounts().Max(x => x.Id);
             var newAccount = new Account()
             {
@@ -76,36 +76,39 @@ namespace TinyBank.Tests
                 CustomerId = 1,
                 Destination = null
             };
+            var expected = maxId + 1;
 
-            //Act
-            repository.AddAccount(newAccount);
-            var actual = repository.GetAccounts().Count;
+            // Act
+            var addedId = await repository.AddAccountAsync(newAccount);
+            var actualCount = repository.GetAccounts().Count;
 
-            //Assert
-            Assert.Equal(expected, actual);
+            // Assert
+            Assert.Equal(expected, addedId);
+            Assert.Equal(expected, actualCount);
         }
 
         [Fact]
-        public void Delete_Account()
+        public async Task Delete_Account()
         {
-            //Arrange
-            var repository = new AccountRepository(_testFilePath);
-            var accountToDelete = 31;
-            var expected = 30;
+            // Arrange
+            var repository = await AccountRepository.CreateAsync(_testFilePath);
+            var accountToDelete = repository.GetAccounts().Max(a => a.Id);
+            var expectedCount = repository.GetAccounts().Count - 1;
 
-            //Act
-            repository.DeleteAccount(accountToDelete);
-            var actual = repository.GetAccounts().Count();
+            // Act
+            await repository.DeleteAccountAsync(accountToDelete);
+            var actualCount = repository.GetAccounts().Count();
 
-            //Assert
-            Assert.Equal(expected, actual);
+            // Assert
+            Assert.Equal(expectedCount, actualCount);
         }
 
         [Fact]
-        public void Update_Account()
+        public async Task Update_Account()
         {
-            //Arrange
-            var repository = new AccountRepository(_testFilePath);
+            // Arrange
+            var repository = await AccountRepository.CreateAsync(_testFilePath);
+
             var updatedAccount = new Account()
             {
                 Id = 23,
@@ -116,11 +119,11 @@ namespace TinyBank.Tests
                 Destination = null
             };
 
-            //Act
-            repository.UpdateAccount(updatedAccount);
-
-            //Assert
+            // Act
+            await repository.UpdateAccountAsync(updatedAccount);
             var actual = repository.GetSingleAccount(23);
+
+            // Assert
             Assert.Equal(updatedAccount, actual);
         }
     }

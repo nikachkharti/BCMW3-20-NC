@@ -5,7 +5,7 @@ namespace TinyBank.Repository.Interfaces
     public interface IOperationRepository
     {
         Task<int> AddOperationAsync(Operation operation);
-        Operation GetSingleOperation();
+        Operation GetSingleOperation(int operationId);
         List<Operation> GetOperationsOfAccount(int accountId);
     }
 }

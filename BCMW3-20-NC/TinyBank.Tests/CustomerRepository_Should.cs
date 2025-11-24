@@ -13,21 +13,21 @@ namespace TinyBank.Tests
         [Fact]
         public async Task Get_Multiple_Customers()
         {
-            //Arrange
+            // Arrange
             var repository = await CustomerRepository.CreateAsync(_testFilePath);
             var expectedCount = 10;
 
-            //Act
+            // Act
             var customers = repository.GetCustomers();
 
-            //Assert
+            // Assert
             Assert.Equal(expectedCount, customers.Count());
         }
 
         [Fact]
         public async Task Get_Individual_Customer()
         {
-            //Arrange
+            // Arrange
             var repository = await CustomerRepository.CreateAsync(_testFilePath);
             var expected = new Customer()
             {
@@ -39,20 +39,22 @@ namespace TinyBank.Tests
                 CustomerType = CustomerType.Phyisical
             };
 
-            //Act
+            // Act
             var actual = repository.GetSingleCustomer(1);
 
-            //Assert
+            // Assert
             Assert.Equal(expected, actual, new CustomerEqulityComparer());
         }
 
         [Fact]
         public async Task Add_Customer()
         {
-            //Arrange
+            // Arrange
             var repository = await CustomerRepository.CreateAsync(_testFilePath);
+
             var expected = 11;
             var maxId = repository.GetCustomers().Max(x => x.Id);
+
             var newCustomer = new Customer()
             {
                 Id = maxId + 1,
@@ -63,20 +65,21 @@ namespace TinyBank.Tests
                 CustomerType = CustomerType.Phyisical
             };
 
-            //Act
+            // Act
             await repository.AddCustomerAsync(newCustomer);
 
             var actual = repository.GetCustomers().Count();
 
-            //Assert
+            // Assert
             Assert.Equal(expected, actual);
         }
 
         [Fact]
         public async Task Update_Customer()
         {
-            //Arrange
+            // Arrange
             var repository = await CustomerRepository.CreateAsync(_testFilePath);
+
             var updatedCustomer = new Customer()
             {
                 Id = 3,
@@ -87,10 +90,10 @@ namespace TinyBank.Tests
                 CustomerType = CustomerType.Phyisical
             };
 
-            //Act
+            // Act
             await repository.UpdateCustomerAsync(updatedCustomer);
 
-            //Assert
+            // Assert
             var actual = repository.GetSingleCustomer(3);
             Assert.Equal(updatedCustomer, actual);
         }
@@ -98,18 +101,19 @@ namespace TinyBank.Tests
         [Fact]
         public async Task Delete_Customer()
         {
-            //Arrange
+            // Arrange
             var repository = await CustomerRepository.CreateAsync(_testFilePath);
+
             var customerIdToDelete = 11;
             var expected = 10;
 
-            //Act
+            // Act
             await repository.DeleteCustomerAsync(customerIdToDelete);
+
             var actual = repository.GetCustomers().Count();
 
-            //Assert
+            // Assert
             Assert.Equal(expected, actual);
         }
-
     }
 }

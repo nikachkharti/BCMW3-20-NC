@@ -1,3 +1,4 @@
+using TinyBank.Repository.Models.Enums;
 using TinyBank.Service.Attributes;
 
 namespace TinyBank.Service.Dtos;

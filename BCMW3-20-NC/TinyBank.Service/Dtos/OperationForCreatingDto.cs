@@ -9,8 +9,6 @@ public class OperationForCreatingDto
     public OperationType OperationType { get; set; }
 
     [CustomRequired]
-    [CustomMinLength(3)]
-    [CustomMaxLength(3)]
     public String Currency { get; set; }
 
     [CustomRequired]
