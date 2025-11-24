@@ -1,13 +1,25 @@
 using TinyBank.Repository.Models.Enums;
+using TinyBank.Service.Attributes;
 
 namespace TinyBank.Service.Dtos;
 
 public class CustomerForUpdatingDto
 {
-	 public Int32 Id { get; set; }
-	 public String Name { get; set; }
-	 public String IdentityNumber { get; set; }
-	 public String PhoneNumber { get; set; }
-	 public String Email { get; set; }
-	 public CustomerType CustomerType { get; set; }
+    [CustomRequired]
+    public Int32 Id { get; set; }
+
+    [CustomRequired]
+    public String Name { get; set; }
+
+    [CustomRequired]
+    public String IdentityNumber { get; set; }
+
+    [CustomRequired]
+    public String PhoneNumber { get; set; }
+
+    [CustomRequired]
+    public String Email { get; set; }
+
+    [CustomRequired]
+    public CustomerType CustomerType { get; set; }
 }
