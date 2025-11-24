@@ -6,7 +6,7 @@ namespace TinyBank.WinformsApp
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run();
+            Application.Run(new Main());
         }
     }
 }

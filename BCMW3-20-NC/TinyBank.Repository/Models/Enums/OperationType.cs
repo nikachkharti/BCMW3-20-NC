@@ -1,4 +1,4 @@
-﻿namespace TinyBank.Repository.Models
+﻿namespace TinyBank.Repository.Models.Enums
 {
     public enum OperationType
     {

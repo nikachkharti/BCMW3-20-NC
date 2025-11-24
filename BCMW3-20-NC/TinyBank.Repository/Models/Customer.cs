@@ -1,7 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using TinyBank.Repository.Attributes;
+using TinyBank.Repository.Models.Enums;
 
 namespace TinyBank.Repository.Models
 {
+    [DtoTransformable]
     public class Customer
     {
         public int Id { get; set; }

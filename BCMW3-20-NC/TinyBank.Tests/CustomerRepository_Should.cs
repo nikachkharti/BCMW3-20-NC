@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using TinyBank.Repository.Implementations;
 using TinyBank.Repository.Models;
+using TinyBank.Repository.Models.Enums;
 
 namespace TinyBank.Tests
 {

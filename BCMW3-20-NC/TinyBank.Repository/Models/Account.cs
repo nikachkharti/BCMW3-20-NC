@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using TinyBank.Repository.Attributes;
 
 namespace TinyBank.Repository.Models
 {
+    [DtoTransformable]
     public class Account
     {
         public int Id { get; set; }
