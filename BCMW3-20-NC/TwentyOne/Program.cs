@@ -1,7 +1,22 @@
 ﻿namespace TwentyOne
 {
+    public class OrderEventArgs : EventArgs
+    {
+        public string OrderName { get; set; }
+        public decimal Price { get; set; }
+        public DateTime OrderTime { get; set; }
+
+        public OrderEventArgs(string orderName, decimal price, DateTime orderTime)
+        {
+            OrderName = orderName;
+            Price = price;
+            OrderTime = orderTime;
+        }
+    }
+
+
     // შაბლონი თუ როგორი უნდა იყოს Handler- ის სტრუქტურა
-    public delegate void OrderEventHandler(string orderName, decimal price);
+    public delegate void OrderEventHandler(object sender, OrderEventArgs e);
 
     public class CoffeeShop //PUBLISHER
     {
@@ -21,7 +36,8 @@
             if (OrderPlaced != null)
             {
                 Console.WriteLine($"[{Name}] Notifying all subscribers...");
-                OrderPlaced(orderName, price);
+                OrderEventArgs args = new(orderName, price, DateTime.Now);
+                OrderPlaced(this, args);
             }
             else
             {
@@ -41,9 +57,12 @@
         }
 
         //3. შეკვეთილს ყავას ადუღებენ სამზარეულოში
-        public void OnOrderPlaced(string orderName, decimal price) // HANDLER
+        public void OnOrderPlaced(object sender, OrderEventArgs e) // HANDLER
         {
-            Console.WriteLine($"[{KitchneName}] Recived order! Preparing: {orderName}");
+            CoffeeShop shop = sender as CoffeeShop;
+
+            Console.WriteLine($"[{KitchneName}] Recived order! Preparing: {shop.Name}");
+            Console.WriteLine($"[{KitchneName}] Preparing: {shop.Name} at {e.OrderTime:HH:mm:ss}");
         }
 
     }
@@ -60,10 +79,12 @@
         }
 
         //2. შეკვეთა მიიღო მოლარემ
-        public void OnOrderPlaced(string orderName, decimal price) // HANDLER
+        public void OnOrderPlaced(object sender, OrderEventArgs e) // HANDLER
         {
-            totalSales += price;
-            Console.WriteLine($"[{CashierName}] Payment received! ${price}. Total sales: ${totalSales}");
+            totalSales += e.Price;
+            Console.WriteLine($"[{CashierName}] Payment received! ${e.OrderName}. Total sales: ${totalSales}");
+            Console.WriteLine($"[{CashierName}] Preparing: {e.OrderName} processed at {e.OrderTime:HH:mm:ss}");
+
         }
 
     }
@@ -72,9 +93,9 @@
     public class ShopManager //SUBSCRIBER
     {
         //4. შეკვეთა მიიღო მენეჯერმა
-        public void OnOrderPlaced(string orderName, decimal price) // HANDLER
+        public void OnOrderPlaced(object sender, OrderEventArgs e) // HANDLER
         {
-            Console.WriteLine($"Inventory Manager updaing stock for: {orderName}");
+            Console.WriteLine($"Inventory Manager updaing stock for: {e.OrderName}");
         }
     }
 
