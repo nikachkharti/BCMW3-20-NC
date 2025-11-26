@@ -24,6 +24,10 @@ namespace TinyBank.WinformsApp
             //await GenerateDtoClasses();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Hello");
+        }
 
         private async Task GenerateDtoClasses()
         {
@@ -34,5 +38,6 @@ namespace TinyBank.WinformsApp
                 Path.Combine(rootPath, "Dtos")
             );
         }
+
     }
 }
