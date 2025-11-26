@@ -68,6 +68,7 @@
     }
 
 
+    //SUBSCRIBER
     public class InventoryManager
     {
         public void OnOrderPlaced(string orderName, decimal price)
