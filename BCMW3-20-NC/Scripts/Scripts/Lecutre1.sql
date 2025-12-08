@@ -12,7 +12,7 @@
 	decimal --- MONEY SMALLMONEY NUMERIC  DECIMAL(????? ??????? ??????)
 	For instance, DECIMAL(3, 2) means: 999.99
 
-
+	
 	-------------------------------
 	char
 	string
