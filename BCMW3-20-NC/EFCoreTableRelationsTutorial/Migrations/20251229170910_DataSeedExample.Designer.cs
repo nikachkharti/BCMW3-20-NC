@@ -3,6 +3,7 @@ using EFCoreTableRelationsTutorial;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCoreTableRelationsTutorial.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251229170910_DataSeedExample")]
+    partial class DataSeedExample
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,64 +23,6 @@ namespace EFCoreTableRelationsTutorial.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("EFCoreTableRelationsTutorial.Entities.Author", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Authors");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            FullName = "Ilia Chavchavadze"
-                        });
-                });
-
-            modelBuilder.Entity("EFCoreTableRelationsTutorial.Entities.Book", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("Books");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AuthorId = 1,
-                            Title = "მგზავრის წერილები"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AuthorId = 1,
-                            Title = "კაცია ადამიანი"
-                        });
-                });
 
             modelBuilder.Entity("EFCoreTableRelationsTutorial.Entities.User", b =>
                 {
@@ -145,17 +90,6 @@ namespace EFCoreTableRelationsTutorial.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EFCoreTableRelationsTutorial.Entities.Book", b =>
-                {
-                    b.HasOne("EFCoreTableRelationsTutorial.Entities.Author", "Author")
-                        .WithMany("Books")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-                });
-
             modelBuilder.Entity("EFCoreTableRelationsTutorial.Entities.UserProfile", b =>
                 {
                     b.HasOne("EFCoreTableRelationsTutorial.Entities.User", "User")
@@ -165,11 +99,6 @@ namespace EFCoreTableRelationsTutorial.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EFCoreTableRelationsTutorial.Entities.Author", b =>
-                {
-                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("EFCoreTableRelationsTutorial.Entities.User", b =>
