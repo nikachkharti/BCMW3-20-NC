@@ -11,6 +11,6 @@ namespace EFCoreTableRelationsTutorial.Entities
 
         public string Name { get; set; }
 
-        public List<Course> Courses { get; set; }
+        public List<StudentCourses> StudentCourses { get; set; }
     }
 }

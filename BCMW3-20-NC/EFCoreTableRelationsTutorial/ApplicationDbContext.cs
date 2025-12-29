@@ -1,8 +1,5 @@
 ﻿using EFCoreTableRelationsTutorial.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System.Runtime.CompilerServices;
-using System.Security.Principal;
 
 namespace EFCoreTableRelationsTutorial
 {
@@ -30,6 +27,7 @@ namespace EFCoreTableRelationsTutorial
             modelBuilder.Entity<Book>().HasKey(b => b.Id);
             modelBuilder.Entity<Student>().HasKey(s => s.Id);
             modelBuilder.Entity<Course>().HasKey(c => c.Id);
+            modelBuilder.Entity<StudentCourses>().HasKey(sc => sc.Id);
 
             modelBuilder
                 .Entity<User>().Property(u => u.Name)
@@ -46,16 +44,16 @@ namespace EFCoreTableRelationsTutorial
                 .WithOne(b => b.Author)
                 .HasForeignKey(b => b.AuthorId);
 
-            modelBuilder.Entity<Student>()
-                .HasMany(s => s.Courses)
-                .WithMany(c => c.Students)
-                .UsingEntity<Dictionary<string, object>>(
-                    "StudentCourses",
-                    j =>
-                    {
-                        j.HasKey("StudentId", "CourseId"); // 👈 Composite PK
-                        j.ToTable("StudentCourses");
-                    });
+
+            modelBuilder.Entity<StudentCourses>()
+                .HasOne(sc => sc.Student)
+                .WithMany(s => s.StudentCourses)
+                .HasForeignKey(sc => sc.StudentId);
+
+            modelBuilder.Entity<StudentCourses>()
+                .HasOne(sc => sc.Course)
+                .WithMany(c => c.StudentCourses)
+                .HasForeignKey(sc => sc.CourseId);
 
 
 
@@ -65,17 +63,7 @@ namespace EFCoreTableRelationsTutorial
             SeedBooks(modelBuilder);
             SeedStudents(modelBuilder);
             SeedCourses(modelBuilder);
-
-
-
-            modelBuilder
-                .Entity("StudentCourses")
-                .HasData
-                (
-                    new { StudentId = 1, CourseId = 1 },
-                    new { StudentId = 1, CourseId = 2 },
-                    new { StudentId = 2, CourseId = 2 }
-                );
+            SeedStudentCourses(modelBuilder);
 
         }
 
@@ -170,6 +158,30 @@ namespace EFCoreTableRelationsTutorial
                 {
                     Id = 2,
                     Title = "Frontend"
+                }
+            );
+        }
+        private static void SeedStudentCourses(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<StudentCourses>().HasData
+            (
+                new StudentCourses()
+                {
+                    Id = 1,
+                    StudentId = 1,
+                    CourseId = 1
+                },
+                new StudentCourses()
+                {
+                    Id = 2,
+                    StudentId = 1,
+                    CourseId = 2
+                },
+                new StudentCourses()
+                {
+                    Id = 3,
+                    StudentId = 2,
+                    CourseId = 2
                 }
             );
         }

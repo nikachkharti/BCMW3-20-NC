@@ -3,15 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFCoreTableRelationsTutorial.Entities
 {
-    public class Course
+    public class StudentCourses
     {
         //[Key]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string Title { get; set; }
+        //[ForeignKey(nameof(Student))]
+        public int StudentId { get; set; }
 
-        public List<StudentCourses> StudentCourses { get; set; }
+        //[ForeignKey(nameof(Course))]
+        public int CourseId { get; set; }
 
+        public Student Student { get; set; }
+        public Course Course { get; set; }
     }
 }
