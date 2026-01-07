@@ -1,6 +1,8 @@
 ﻿using EFCoreTableRelationsTutorial.Dtos;
 using EFCoreTableRelationsTutorial.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace EFCoreTableRelationsTutorial.Repository
 {
@@ -14,11 +16,11 @@ namespace EFCoreTableRelationsTutorial.Repository
         }
 
 
-        //IEnumerable and IQueryable based on ToListAsync example
+        //1. IEnumerable and IQueryable based on ToListAsync example
         public async Task<List<Student>> GetAllStudentsAsync() => await _context.Students.ToListAsync();
 
 
-        //Include
+        //2. Include
         public async Task<List<Book>> GetAllBooksWithAuthorsAsync()
         {
             return await _context.Books
@@ -27,7 +29,29 @@ namespace EFCoreTableRelationsTutorial.Repository
         }
 
 
-        //Include and ThenInclude როდესაც გინდა Entity Framework-ის tracked entity
+        //2.2 Cycle Exception. ციკლური დამოკიდებულება JSON სერიალიზაციის დროს. უნდა გამოვიყენოთ DTO.
+        public async Task AlertCycleExceptionExample()
+        {
+            var result = await GetAllBooksWithAuthorsAsync();
+
+            //Solution: Map to DTO
+            //var mappedReult = result.Select(r => new BookForGettingDto()
+            //{
+            //    Id = r.Id,
+            //    Title = r.Title,
+            //    Author = new AuthorForGettingDto()
+            //    {
+            //        Id = r.Author.Id,
+            //        FullName = r.Author.FullName,
+            //    }
+            //});
+
+            var json = JsonSerializer.Serialize(result, new JsonSerializerOptions() { WriteIndented = true });
+        }
+
+
+
+        //3. Include and ThenInclude როდესაც გინდა Entity Framework-ის tracked entity
         public async Task<List<Student>> GetAllStudentsWithCoursesAsync()
         {
             return await _context.Students
@@ -37,7 +61,7 @@ namespace EFCoreTableRelationsTutorial.Repository
         }
 
 
-        //Join და Select როდესაც გინდა DTO ან untracked entity
+        //4. Join და Select როდესაც გინდა DTO ან untracked entity
         public async Task<IEnumerable<object>> GetAllStudentsWithCoursesAsyncUsingJoin()
         {
             #region V1 - JOIN არის AsNoTracking. DTO გარეშე
@@ -103,7 +127,7 @@ namespace EFCoreTableRelationsTutorial.Repository
         }
 
 
-        //Where და OrderByDescending
+        //5. Where და OrderByDescending
         public async Task<List<Student>> GetAllStudentsFilteredAndSortedAsync()
         {
             return await _context.Students
@@ -113,7 +137,7 @@ namespace EFCoreTableRelationsTutorial.Repository
         }
 
 
-        //GroupBy
+        //6. GroupBy
         public async Task<IEnumerable<object>> GroupStudentsByCourseCountAsync()
         {
             return await _context.StudentCourses

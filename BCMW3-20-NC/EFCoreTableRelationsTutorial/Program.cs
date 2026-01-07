@@ -1,4 +1,6 @@
-﻿using EFCoreTableRelationsTutorial.Repository;
+﻿using EFCoreTableRelationsTutorial.Dtos;
+using EFCoreTableRelationsTutorial.Repository;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EFCoreTableRelationsTutorial
@@ -9,9 +11,7 @@ namespace EFCoreTableRelationsTutorial
         {
             StudentRepository studentRepository = new StudentRepository(new ApplicationDbContext());
 
-
-            var result = await studentRepository.GroupStudentsByCourseCountAsync();
-
+            var result = await studentRepository.GetAllBooksWithAuthorsAsync();
         }
     }
 }
