@@ -16,6 +16,8 @@ namespace EFCoreTableRelationsTutorial.Repository
         }
 
 
+        #region ნაწილი 1
+
         //1. IEnumerable and IQueryable based on ToListAsync example
         public async Task<List<Student>> GetAllStudentsAsync() => await _context.Students.ToListAsync();
 
@@ -48,7 +50,6 @@ namespace EFCoreTableRelationsTutorial.Repository
 
             var json = JsonSerializer.Serialize(result, new JsonSerializerOptions() { WriteIndented = true });
         }
-
 
 
         //3. Include and ThenInclude როდესაც გინდა Entity Framework-ის tracked entity
@@ -149,6 +150,17 @@ namespace EFCoreTableRelationsTutorial.Repository
                 })
                 .ToListAsync();
         }
+
+
+        /*
+            რჩევები EF + LINQ-ზე
+            Include ზედმეტად არ გამოიყენო → მოაქვს ბევრი JOIN და ანელებს query-ს
+            Projection (Select new {}) უკეთესია როცა არ გჭირდება სრული entity
+            AsNoTracking() გამოიყენე როცა მხოლოდ წაკითხვა გინდა         
+         */
+
+        #endregion
+
 
 
 

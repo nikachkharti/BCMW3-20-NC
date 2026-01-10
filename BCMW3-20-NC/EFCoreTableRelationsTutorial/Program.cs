@@ -1,7 +1,4 @@
-﻿using EFCoreTableRelationsTutorial.Dtos;
-using EFCoreTableRelationsTutorial.Repository;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using EFCoreTableRelationsTutorial.Repository;
 
 namespace EFCoreTableRelationsTutorial
 {
