@@ -107,13 +107,13 @@ namespace EFCoreTableRelationsTutorial.Repository
         public async Task<IEnumerable<object>> GroupStudentsByCourseCountAsync()
         {
             return await _context.StudentCourses
-                .GroupBy(sc => sc.StudentId)
-                .Select(g => new
-                {
-                    StudentId = g.Key,
-                    CourseCount = g.Count()
-                })
-                .ToListAsync();
+            .GroupBy(sc => new { sc.StudentId, sc.Student.Name })
+            .Select(g => new
+            {
+                StudentName = g.Key.Name,
+                CourseCount = g.Count()
+            })
+            .ToListAsync();
         }
 
 
