@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Forum.API.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Forum.API.Controllers
@@ -7,10 +8,21 @@ namespace Forum.API.Controllers
     [ApiController]
     public class TopicsController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAllTopics()
+        private readonly ITopicRepository _topicRepository;
+
+        public TopicsController(ITopicRepository topicRepository)
         {
-            return Ok();
+            _topicRepository = topicRepository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllTopics()
+        {
+            var result = await _topicRepository.GetAllTopicsAsync();
+
+            if (result.Count > 0)
+                return Ok(result);
+            return NotFound();
         }
     }
 }
