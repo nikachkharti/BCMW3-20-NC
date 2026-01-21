@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreTableRelationsTutoria
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiFirst", "WebApiFirst\WebApiFirst.csproj", "{FD9A14DB-4A70-4C49-8405-DFE4B04D2831}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.API", "Forum.API\Forum.API.csproj", "{4E521C84-33CE-438E-B118-DB86C9A44B3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -242,6 +244,12 @@ Global
 		{FD9A14DB-4A70-4C49-8405-DFE4B04D2831}.Default|Any CPU.Build.0 = Release|Any CPU
 		{FD9A14DB-4A70-4C49-8405-DFE4B04D2831}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD9A14DB-4A70-4C49-8405-DFE4B04D2831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E521C84-33CE-438E-B118-DB86C9A44B3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E521C84-33CE-438E-B118-DB86C9A44B3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E521C84-33CE-438E-B118-DB86C9A44B3C}.Default|Any CPU.ActiveCfg = Release|Any CPU
+		{4E521C84-33CE-438E-B118-DB86C9A44B3C}.Default|Any CPU.Build.0 = Release|Any CPU
+		{4E521C84-33CE-438E-B118-DB86C9A44B3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E521C84-33CE-438E-B118-DB86C9A44B3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
