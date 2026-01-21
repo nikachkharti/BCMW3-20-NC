@@ -15,7 +15,7 @@ namespace WebApiFirst
             builder.Services.AddOpenApi(); // ქმნის OpenAPI სერვისს 
 
             // სერვისი რეგისტრაცია DI გამოყენებით
-            //builder.Services.AddTransient<INotificationService, SmsService>();
+            builder.Services.AddTransient<INotificationService, SmsService>();
             //builder.Services.AddScoped<INotificationService, SmsService>();
             //builder.Services.AddSingleton<INotificationService, SmsService>();
 
