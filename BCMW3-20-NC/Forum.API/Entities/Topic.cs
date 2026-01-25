@@ -26,5 +26,7 @@ namespace Forum.API.Entities
         public DateTime LastCommentDate { get; set; }
 
         public bool CommentsAreAllowed { get; set; } = true;
+
+        public List<Comment> Comments { get; set; }
     }
 }

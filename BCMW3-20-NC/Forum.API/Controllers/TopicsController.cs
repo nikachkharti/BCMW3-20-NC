@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Forum.API.Controllers
 {
+    /*
+
     [Route("api/topics")]
     [ApiController]
     public class TopicsController : ControllerBase
@@ -63,5 +65,8 @@ namespace Forum.API.Controllers
             return Ok(deleted);
         }
     }
+
+     */
+
 
 }

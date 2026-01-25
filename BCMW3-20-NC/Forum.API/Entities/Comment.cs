@@ -17,6 +17,6 @@ namespace Forum.API.Entities
 
         [ForeignKey(nameof(Topic))]
         public Guid TopicId { get; set; }
-        public Comment Topic { get; set; }
+        public Topic Topic { get; set; }
     }
 }

@@ -1,13 +1,9 @@
 ﻿using Forum.API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forum.API.Repository
 {
-    public interface ITopicRepository
+    public interface ITopicRepository : IRepositoryBase<Topic, DbContext>
     {
-        Task<List<Topic>> GetAllTopicsAsync();
-        Task<Topic> GetSingleTopicAsync(Guid id);
-        Task AddNewTopicAsync(Topic entity);
-        Task UpdateNewTopicAsync(Topic entity);
-        Task<Topic> DeleteSingleTopicAsync(Guid id);
     }
 }

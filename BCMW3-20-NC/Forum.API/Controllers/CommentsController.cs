@@ -18,18 +18,18 @@ namespace Forum.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllComments()
         {
-            var result = await _commentRepository.GetAllCommentsAsync();
+            var result = await _commentRepository.GetAllAsync();
 
-            if (result.Count == 0)
+            if (result.TotalCount == 0)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(result.Items);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleComment(Guid id)
         {
-            var comment = await _commentRepository.GetSingleCommentAsync(id);
+            var comment = await _commentRepository.GetAsync(x => x.Id == id, includeProperties: "Topic");
 
             if (comment == null)
                 return NotFound();
@@ -40,26 +40,38 @@ namespace Forum.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewComment([FromBody] Comment comment)
         {
-            await _commentRepository.AddNewCommentAsync(comment);
+            await _commentRepository.AddAsync(comment);
+            await _commentRepository.SaveAsync();
+
             return Ok();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateComment([FromBody] Comment comment)
         {
-            await _commentRepository.UpdateNewCommentAsync(comment);
+            var commentToUpdate = await _commentRepository.GetAsync(x => x.Id == comment.Id);
+
+            if (commentToUpdate == null)
+                return NotFound();
+
+            _commentRepository.Update(comment);
+            await _commentRepository.SaveAsync();
+
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(Guid id)
         {
-            var deleted = await _commentRepository.DeleteSingleCommentAsync(id);
+            var commmentToDelete = await _commentRepository.GetAsync(x => x.Id == id);
 
-            if (deleted == null)
+            if (commmentToDelete == null)
                 return NotFound();
 
-            return Ok(deleted);
+            _commentRepository.Remove(commmentToDelete);
+            await _commentRepository.SaveAsync();
+
+            return NoContent();
         }
     }
 

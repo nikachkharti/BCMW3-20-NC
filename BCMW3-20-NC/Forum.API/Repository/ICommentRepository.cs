@@ -1,13 +1,9 @@
 ﻿using Forum.API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forum.API.Repository
 {
-    public interface ICommentRepository
+    public interface ICommentRepository : IRepositoryBase<Comment, DbContext>
     {
-        Task<List<Comment>> GetAllCommentsAsync();
-        Task<Comment> GetSingleCommentAsync(Guid id);
-        Task AddNewCommentAsync(Comment entity);
-        Task UpdateNewCommentAsync(Comment entity);
-        Task<Comment> DeleteSingleCommentAsync(Guid id);
     }
 }
