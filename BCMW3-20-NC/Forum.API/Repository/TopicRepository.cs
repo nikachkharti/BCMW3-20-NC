@@ -17,5 +17,7 @@ namespace Forum.API.Repository
         {
             return await _context.Topics.ToListAsync();
         }
+
+
     }
 }

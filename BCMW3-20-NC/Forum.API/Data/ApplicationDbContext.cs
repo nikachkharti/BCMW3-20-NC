@@ -13,65 +13,67 @@ namespace Forum.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            Guid topic1Id = Guid.NewGuid();
-            Guid topic2Id = Guid.NewGuid();
-            Guid topic3Id = Guid.NewGuid();
+            // 🔒 Static GUIDs
+            var topic1Id = new Guid("9EC8A152-A054-4DE9-B30A-C9286E03ED72");
+            var topic2Id = new Guid("4B363C0A-6917-46FA-AAC0-815F2FD9351B");
+            var topic3Id = new Guid("F9B01BD8-C9DB-4DA9-A1CD-46606EB0DADF");
 
-            Guid comment1Id = Guid.NewGuid();
-            Guid comment2Id = Guid.NewGuid();
+            var comment1Id = new Guid("A59E8CEF-D838-4E7C-8396-86B1B3A96A98");
+            var comment2Id = new Guid("72775F5B-0878-483E-97EA-2BC255AA8B74");
 
-            modelBuilder.Entity<Topic>().HasData
-            (
-                new Topic()
+            // 🔒 Static dates
+            var createDate = new DateTime(2026, 1, 25);
+            var lastCommentDate = new DateTime(2026, 1, 25);
+
+            modelBuilder.Entity<Topic>().HasData(
+                new Topic
                 {
                     Id = topic1Id,
                     Title = "First Topic",
                     Content = "Hello World!",
-                    CreateDate = DateTime.Now,
+                    CreateDate = createDate,
                     ImageUrl = null,
-                    LastCommentDate = DateTime.Now,
+                    LastCommentDate = lastCommentDate,
                     CommentsAreAllowed = true
                 },
-                new Topic()
+                new Topic
                 {
                     Id = topic2Id,
                     Title = "Second Topic",
                     Content = "Hello World!",
-                    CreateDate = DateTime.Now,
+                    CreateDate = createDate,
                     ImageUrl = null,
-                    LastCommentDate = DateTime.Now,
+                    LastCommentDate = lastCommentDate,
                     CommentsAreAllowed = true
                 },
-                new Topic()
+                new Topic
                 {
                     Id = topic3Id,
-                    Title = "Second Topic",
+                    Title = "Third Topic",
                     Content = "Hello World!",
-                    CreateDate = DateTime.Now,
+                    CreateDate = createDate,
                     ImageUrl = null,
-                    LastCommentDate = DateTime.Now,
+                    LastCommentDate = lastCommentDate,
                     CommentsAreAllowed = true
                 }
             );
 
-            modelBuilder.Entity<Comment>().HasData
-            (
-                new Comment()
+            modelBuilder.Entity<Comment>().HasData(
+                new Comment
                 {
                     Id = comment1Id,
-                    CommentDate = DateTime.Now.AddDays(1),
+                    CommentDate = new DateTime(2026, 1, 26),
                     Content = "Hello Comment!",
-                    TopicId = topic1Id,
+                    TopicId = topic1Id
                 },
-                new Comment()
+                new Comment
                 {
                     Id = comment2Id,
-                    CommentDate = DateTime.Now.AddDays(2),
+                    CommentDate = new DateTime(2026, 1, 27),
                     Content = "Hello Comment!",
-                    TopicId = topic2Id,
+                    TopicId = topic2Id
                 }
             );
-
         }
 
         public DbSet<Topic> Topics { get; set; }
