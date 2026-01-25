@@ -1,32 +1,51 @@
-﻿using Forum.API.Entities;
+﻿using Forum.API.Data;
+using Forum.API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forum.API.Repository
 {
     public class CommentRepository : ICommentRepository
     {
-        public Task AddNewCommentAsync(Comment entity)
+        private readonly ApplicationDbContext _context;
+
+        public CommentRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<Comment> DeleteSingleCommentAsync(Guid id)
+        public async Task AddNewCommentAsync(Comment entity)
         {
-            throw new NotImplementedException();
+            await _context.Comments.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<List<Comment>> GetAllCommentsAsync()
+        public async Task<Comment> DeleteSingleCommentAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var comment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (comment == null)
+                return null;
+
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+
+            return comment;
         }
 
-        public Task<Comment> GetSingleCommentAsync(Guid id)
+        public async Task<List<Comment>> GetAllCommentsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Comments.ToListAsync();
         }
 
-        public Task UpdateNewCommentAsync(Comment entity)
+        public async Task<Comment> GetSingleCommentAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task UpdateNewCommentAsync(Comment entity)
+        {
+            _context.Comments.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

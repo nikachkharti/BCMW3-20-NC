@@ -13,29 +13,39 @@ namespace Forum.API.Repository
             _context = context;
         }
 
-        public Task AddNewTopicAsync(Topic entity)
+        public async Task AddNewTopicAsync(Topic entity)
         {
-            throw new NotImplementedException();
+            await _context.Topics.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<Topic> DeleteSingleTopicAsync(Guid id)
+        public async Task<Topic> DeleteSingleTopicAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var topic = await _context.Topics.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (topic == null)
+                return null;
+
+            _context.Topics.Remove(topic);
+            await _context.SaveChangesAsync();
+
+            return topic;
         }
 
-        public Task<List<Topic>> GetAllTopicsAsync()
+        public async Task<List<Topic>> GetAllTopicsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Topics.ToListAsync();
         }
 
-        public Task<Topic> GetSingleTopicAsync(Guid id)
+        public async Task<Topic> GetSingleTopicAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Topics.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task UpdateNewTopicAsync(Topic entity)
+        public async Task UpdateNewTopicAsync(Topic entity)
         {
-            throw new NotImplementedException();
+            _context.Topics.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }
