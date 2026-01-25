@@ -13,11 +13,29 @@ namespace Forum.API.Repository
             _context = context;
         }
 
-        public async Task<List<Topic>> GetAllTopicsAsync()
+        public Task AddNewTopicAsync(Topic entity)
         {
-            return await _context.Topics.ToListAsync();
+            throw new NotImplementedException();
         }
 
+        public Task<Topic> DeleteSingleTopicAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<List<Topic>> GetAllTopicsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Topic> GetSingleTopicAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateNewTopicAsync(Topic entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
