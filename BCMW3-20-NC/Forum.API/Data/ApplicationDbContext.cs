@@ -25,8 +25,8 @@ namespace Forum.API.Data
             var createDate = new DateTime(2026, 1, 25);
             var lastCommentDate = new DateTime(2026, 1, 25);
 
-            modelBuilder.Entity<Comment>().HasData(
-                new Comment
+            modelBuilder.Entity<Topic>().HasData(
+                new Topic
                 {
                     Id = topic1Id,
                     Title = "First Topic",
@@ -36,7 +36,7 @@ namespace Forum.API.Data
                     LastCommentDate = lastCommentDate,
                     CommentsAreAllowed = true
                 },
-                new Comment
+                new Topic
                 {
                     Id = topic2Id,
                     Title = "Second Topic",
@@ -46,7 +46,7 @@ namespace Forum.API.Data
                     LastCommentDate = lastCommentDate,
                     CommentsAreAllowed = true
                 },
-                new Comment
+                new Topic
                 {
                     Id = topic3Id,
                     Title = "Third Topic",
@@ -76,7 +76,7 @@ namespace Forum.API.Data
             );
         }
 
-        public DbSet<Comment> Topics { get; set; }
+        public DbSet<Topic> Topics { get; set; }
         public DbSet<Comment> Comments { get; set; }
     }
 
