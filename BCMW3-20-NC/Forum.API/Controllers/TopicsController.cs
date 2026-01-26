@@ -30,7 +30,7 @@ namespace Forum.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleTopic(Guid id)
         {
-            var topic = await _topicRepository.GetAsync(x => x.Id == id);
+            var topic = await _topicRepository.GetAsync(x => x.Id == id, includeProperties: "Comments");
 
             if (topic == null)
                 return NotFound();

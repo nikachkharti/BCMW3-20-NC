@@ -1,5 +1,6 @@
 using Forum.API.Data;
 using Forum.API.Repository;
+using Forum.API.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Forum.API
@@ -15,6 +16,7 @@ namespace Forum.API
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerLocalConnection")));
             builder.Services.AddScoped<ITopicRepository, TopicRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<ITopicService, TopicService>();
 
             var app = builder.Build();
 
