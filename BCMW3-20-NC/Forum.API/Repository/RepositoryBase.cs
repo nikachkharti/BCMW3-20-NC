@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Forum.API.Repository
 {
@@ -82,13 +83,36 @@ namespace Forum.API.Repository
 
             return query;
         }
-
-
-        //TODO IMPLEMENT
-        private IQueryable<T> ApplyOrdering(string orderBy, bool ascending, IQueryable<T> query)
+        private static IQueryable<T> ApplyOrdering(string orderBy, bool ascending, IQueryable<T> query)
         {
-            throw new NotImplementedException();
+            var propertyInfo = typeof(T).GetProperty(orderBy,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (propertyInfo != null)
+            {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var propertyAccess = Expression.MakeMemberAccess(parameter, propertyInfo);
+                var orderByExpression = Expression.Lambda(propertyAccess, parameter);
+                var methodName = "OrderBy";
+
+                if (!ascending)
+                {
+                    methodName = "OrderByDescending";
+                }
+
+                var resultExpression = Expression.Call(
+                    typeof(Queryable),
+                    methodName,
+                    new Type[] { typeof(T), propertyInfo.PropertyType },
+                    query.Expression,
+                    Expression.Quote(orderByExpression));
+
+                query = query.Provider.CreateQuery<T>(resultExpression);
+            }
+
+            return query;
         }
+
 
 
     }
