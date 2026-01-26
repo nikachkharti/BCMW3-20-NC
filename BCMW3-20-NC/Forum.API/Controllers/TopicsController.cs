@@ -1,77 +1,69 @@
 ﻿using Forum.API.Entities;
-using Forum.API.Repository;
+using Forum.API.Models.DTO.Topics;
+using Forum.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Forum.API.Controllers
 {
-
     [Route("api/topics")]
     [ApiController]
     public class TopicsController : ControllerBase
     {
-        private readonly ITopicRepository _topicRepository;
+        private readonly ITopicService _topicService;
 
-        public TopicsController(ITopicRepository topicRepository)
+        public TopicsController(ITopicService topicService)
         {
-            _topicRepository = topicRepository;
+            _topicService = topicService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTopics()
+        public async Task<IActionResult> GetAllTopics([FromQuery] int? pageNumber = 1, [FromQuery] int? pageSize = 10)
         {
-            var result = await _topicRepository.GetAllAsync();
+            var result = await _topicService.GetAllTopicsAsync(pageNumber, pageSize);
 
-            if (result.Items.Count == 0)
-                return NotFound();
+            if (result.Item1.Count > 0)
+                return Ok(new
+                {
+                    Topics = result.Item1,
+                    TopicsCount = result.totalCount
+                });
 
-            return Ok(result.Items);
+            return NoContent();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleTopic(Guid id)
         {
-            var topic = await _topicRepository.GetAsync(x => x.Id == id, includeProperties: "Comments");
+            var result = await _topicService.GetOpicDetailsAsync(id);
 
-            if (topic == null)
-                return NotFound();
+            if (result != null)
+                return Ok(result);
 
-            return Ok(topic);
+            return NotFound($"Topic with id: {id} not found");
+
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewTopic([FromBody] Topic topic)
+        public async Task<IActionResult> AddNewTopic([FromBody] TopicForCreatingDto model)
         {
-            await _topicRepository.AddAsync(topic);
-            await _topicRepository.SaveAsync();
-            return Ok();
+            var result = await _topicService.AddNewTopicAsync(model);
+
+            if (result != 0)
+                return Created();
+
+            return BadRequest();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateTopic([FromBody] Topic topic)
         {
-            var topicToUpdate = await _topicRepository.GetAsync(x => x.Id == topic.Id);
-
-            if (topicToUpdate == null)
-                return NotFound();
-
-            _topicRepository.Update(topic);
-            await _topicRepository.SaveAsync();
-
-            return Ok();
+            throw new NotImplementedException();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTopic(Guid id)
         {
-            var topicToDelete = await _topicRepository.GetAsync(x => x.Id == id);
-
-            if (topicToDelete == null)
-                return NotFound();
-
-            _topicRepository.Remove(topicToDelete);
-            await _topicRepository.SaveAsync();
-
-            return NoContent();
+            throw new NotImplementedException();
         }
     }
 
