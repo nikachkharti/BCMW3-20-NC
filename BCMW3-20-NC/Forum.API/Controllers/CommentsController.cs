@@ -20,7 +20,7 @@ namespace Forum.API.Controllers
         {
             var result = await _commentRepository.GetAllAsync();
 
-            if (result.TotalCount == 0)
+            if (result.Items.Count == 0)
                 return NotFound();
 
             return Ok(result.Items);

@@ -1,11 +1,9 @@
 ﻿using Forum.API.Entities;
 using Forum.API.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Forum.API.Controllers
 {
-    /*
 
     [Route("api/topics")]
     [ApiController]
@@ -21,18 +19,18 @@ namespace Forum.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTopics()
         {
-            var result = await _topicRepository.GetAllTopicsAsync();
+            var result = await _topicRepository.GetAllAsync();
 
-            if (result.Count == 0)
+            if (result.Items.Count == 0)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(result.Items);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleTopic(Guid id)
         {
-            var topic = await _topicRepository.GetSingleTopicAsync(id);
+            var topic = await _topicRepository.GetAsync(x => x.Id == id);
 
             if (topic == null)
                 return NotFound();
@@ -43,30 +41,39 @@ namespace Forum.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewTopic([FromBody] Topic topic)
         {
-            await _topicRepository.AddNewTopicAsync(topic);
+            await _topicRepository.AddAsync(topic);
+            await _topicRepository.SaveAsync();
             return Ok();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateTopic([FromBody] Topic topic)
         {
-            await _topicRepository.UpdateNewTopicAsync(topic);
+            var topicToUpdate = await _topicRepository.GetAsync(x => x.Id == topic.Id);
+
+            if (topicToUpdate == null)
+                return NotFound();
+
+            _topicRepository.Update(topic);
+            await _topicRepository.SaveAsync();
+
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTopic(Guid id)
         {
-            var deleted = await _topicRepository.DeleteSingleTopicAsync(id);
+            var topicToDelete = await _topicRepository.GetAsync(x => x.Id == id);
 
-            if (deleted == null)
+            if (topicToDelete == null)
                 return NotFound();
 
-            return Ok(deleted);
+            _topicRepository.Remove(topicToDelete);
+            await _topicRepository.SaveAsync();
+
+            return NoContent();
         }
     }
-
-     */
 
 
 }
