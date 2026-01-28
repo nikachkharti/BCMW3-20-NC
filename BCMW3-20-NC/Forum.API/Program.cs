@@ -6,6 +6,7 @@ using Forum.API.Services.Mapping;
 using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace Forum.API
 {
@@ -13,6 +14,8 @@ namespace Forum.API
     {
         public static void Main(string[] args)
         {
+            Log.Information("Staring Forum.API");
+
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
@@ -21,6 +24,11 @@ namespace Forum.API
             builder.Services.AddScoped<ITopicRepository, TopicRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<ITopicService, TopicService>();
+            builder.Host.UseSerilog((context, configuration) =>
+            {
+                configuration.ReadFrom.Configuration(context.Configuration);
+            });
+
 
             //Mapster
             var config = new TypeAdapterConfig();
@@ -33,6 +41,7 @@ namespace Forum.API
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
