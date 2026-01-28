@@ -18,6 +18,7 @@ namespace Forum.API.Services
 
         public async Task<int> AddNewTopicAsync(TopicForCreatingDto model)
         {
+            ValidateTopicForCreatingDto(model);
             await _topicRepository.AddAsync(_mapper.Map<Topic>(model));
             return await _topicRepository.SaveAsync();
         }
@@ -77,6 +78,26 @@ namespace Forum.API.Services
 
             return 0;
         }
+
+
+        #region VALIDATORS
+
+
+        private static void ValidateTopicForCreatingDto(TopicForCreatingDto model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Title))
+            {
+                throw new ArgumentException("Title is required.");
+            }
+            if (string.IsNullOrWhiteSpace(model.Content))
+            {
+                throw new ArgumentException("Content is required.");
+            }
+        }
+
+
+        #endregion
+
 
     }
 }

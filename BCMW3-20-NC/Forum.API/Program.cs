@@ -1,4 +1,5 @@
 using Forum.API.Data;
+using Forum.API.Middleware;
 using Forum.API.Repository;
 using Forum.API.Services;
 using Forum.API.Services.Mapping;
@@ -31,6 +32,7 @@ namespace Forum.API
 
             app.UseSwagger();
             app.UseSwaggerUI();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
