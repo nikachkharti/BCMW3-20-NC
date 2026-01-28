@@ -64,14 +64,14 @@ namespace Forum.API.Services
             return _mapper.Map<TopicDetailsForGettingDto>(result);
         }
 
-        //PROBLEM?
         public async Task<int> UpdateNewTopicAsync(TopicForUpdatingDto model)
         {
-            var topicToUpdate = await _topicRepository.GetAsync(t => t.Id == model.Id);
+            var topicToUpdate = await _topicRepository.GetAsync(t => t.Id == model.Id/*, tracking: false*/);
 
             if (topicToUpdate != null)
             {
-                _topicRepository.Update(_mapper.Map<Topic>(model));
+                //_topicRepository.Update(_mapper.Map<Topic>(model));
+                _mapper.Map(model, topicToUpdate);
                 return await _topicRepository.SaveAsync();
             }
 
