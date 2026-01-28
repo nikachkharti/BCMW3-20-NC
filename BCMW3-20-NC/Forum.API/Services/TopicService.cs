@@ -35,9 +35,17 @@ namespace Forum.API.Services
             return 0;
         }
 
-        public async Task<(List<TopicListForGettingDto>, int totalCount)> GetAllTopicsAsync(int? pageNumber, int? pageSize)
+        public async Task<(List<TopicListForGettingDto> Topics, int TotalCount)> GetAllTopicsAsync(
+            int? pageNumber,
+            int? pageSize
+        )
         {
-            var result = await _topicRepository.GetAllAsync(pageNumber: pageNumber, pageSize: pageSize);
+            var result = await _topicRepository.GetAllAsync(
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                orderBy: "CreateDate",
+                ascending: false
+            );
 
             if (result.Items.Count > 0)
             {
@@ -50,19 +58,20 @@ namespace Forum.API.Services
                 .ToList(), 0);
         }
 
-        public async Task<TopicDetailsForGettingDto> GetOpicDetailsAsync(Guid topicId)
+        public async Task<TopicDetailsForGettingDto> GetTopicDetailsAsync(Guid topicId)
         {
             var result = await _topicRepository.GetAsync(t => t.Id == topicId, includeProperties: "Comments");
             return _mapper.Map<TopicDetailsForGettingDto>(result);
         }
 
+        //PROBLEM?
         public async Task<int> UpdateNewTopicAsync(TopicForUpdatingDto model)
         {
             var topicToUpdate = await _topicRepository.GetAsync(t => t.Id == model.Id);
 
             if (topicToUpdate != null)
             {
-                _topicRepository.Update(topicToUpdate);
+                _topicRepository.Update(_mapper.Map<Topic>(model));
                 return await _topicRepository.SaveAsync();
             }
 

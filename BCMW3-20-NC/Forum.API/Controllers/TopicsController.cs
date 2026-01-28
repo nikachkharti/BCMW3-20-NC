@@ -1,5 +1,4 @@
-﻿using Forum.API.Entities;
-using Forum.API.Models.DTO.Topics;
+﻿using Forum.API.Models.DTO.Topics;
 using Forum.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,22 +18,23 @@ namespace Forum.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTopics([FromQuery] int? pageNumber = 1, [FromQuery] int? pageSize = 10)
         {
-            var result = await _topicService.GetAllTopicsAsync(pageNumber, pageSize);
+            var result = await _topicService.GetAllTopicsAsync(
+                pageNumber: pageNumber,
+                pageSize: pageSize
+            );
 
-            if (result.Item1.Count > 0)
-                return Ok(new
-                {
-                    Topics = result.Item1,
-                    TopicsCount = result.totalCount
-                });
-
-            return NoContent();
+            return Ok(new
+            {
+                Items = result.Topics,
+                TotalCount = result.TotalCount
+            });
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleTopic(Guid id)
         {
-            var result = await _topicService.GetOpicDetailsAsync(id);
+            var result = await _topicService.GetTopicDetailsAsync(id);
 
             if (result != null)
                 return Ok(result);
@@ -55,15 +55,25 @@ namespace Forum.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateTopic([FromBody] Topic topic)
+        public async Task<IActionResult> UpdateTopic([FromBody] TopicForUpdatingDto topic)
         {
-            throw new NotImplementedException();
+            var result = await _topicService.UpdateNewTopicAsync(topic);
+
+            if (result != 0)
+                return Ok($"Topic with id: {topic.Id} updated successfully");
+
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTopic(Guid id)
         {
-            throw new NotImplementedException();
+            var result = await _topicService.DeleteTopicAsync(id);
+
+            if (result != 0)
+                return Ok($"Topic with id: {id} deleted successfully");
+
+            return NotFound($"Topic with id: {id} not found");
         }
     }
 
