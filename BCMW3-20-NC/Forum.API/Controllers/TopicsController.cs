@@ -1,6 +1,10 @@
-﻿using Forum.API.Models.DTO.Topics;
+﻿using Forum.API.Entities;
+using Forum.API.Models;
+using Forum.API.Models.DTO.Topics;
 using Forum.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+
 
 namespace Forum.API.Controllers
 {
@@ -23,11 +27,19 @@ namespace Forum.API.Controllers
                 pageSize: pageSize
             );
 
-            return Ok(new
+            var response = new CommonResponse
             {
-                Items = result.Topics,
-                TotalCount = result.TotalCount
-            });
+                Message = "Topics retrieved successfully",
+                StatusCode = HttpStatusCode.OK,
+                IsSuccess = true,
+                Result = new
+                {
+                    Topics = result.Topics,
+                    TotalCount = result.TotalCount
+                }
+            };
+
+            return StatusCode(Convert.ToInt32(response.StatusCode), response);
         }
 
 
@@ -36,11 +48,15 @@ namespace Forum.API.Controllers
         {
             var result = await _topicService.GetTopicDetailsAsync(id);
 
-            if (result != null)
-                return Ok(result);
+            var response = new CommonResponse
+            {
+                Message = "Topic retrieved successfully",
+                StatusCode = HttpStatusCode.OK,
+                IsSuccess = true,
+                Result = result
+            };
 
-            return NotFound($"Topic with id: {id} not found");
-
+            return StatusCode(Convert.ToInt32(response.StatusCode), response);
         }
 
         [HttpPost]
@@ -48,10 +64,15 @@ namespace Forum.API.Controllers
         {
             var result = await _topicService.AddNewTopicAsync(model);
 
-            if (result != 0)
-                return Created();
+            var response = new CommonResponse
+            {
+                Message = "Topic added successfully",
+                StatusCode = HttpStatusCode.Created,
+                IsSuccess = true,
+                Result = result
+            };
 
-            return BadRequest();
+            return StatusCode(Convert.ToInt32(response.StatusCode), response);
         }
 
         [HttpPut]
@@ -59,10 +80,15 @@ namespace Forum.API.Controllers
         {
             var result = await _topicService.UpdateNewTopicAsync(topic);
 
-            if (result != 0)
-                return Ok($"Topic with id: {topic.Id} updated successfully");
+            var response = new CommonResponse
+            {
+                Message = $"Topic with id: {topic.Id} updated successfully",
+                StatusCode = HttpStatusCode.OK,
+                IsSuccess = true,
+                Result = result
+            };
 
-            return BadRequest();
+            return StatusCode(Convert.ToInt32(response.StatusCode), response);
         }
 
         [HttpDelete("{id}")]
@@ -70,10 +96,15 @@ namespace Forum.API.Controllers
         {
             var result = await _topicService.DeleteTopicAsync(id);
 
-            if (result != 0)
-                return Ok($"Topic with id: {id} deleted successfully");
+            var response = new CommonResponse
+            {
+                Message = $"Topic with id: {id} deleted successfully",
+                StatusCode = HttpStatusCode.OK,
+                IsSuccess = true,
+                Result = result
+            };
 
-            return NotFound($"Topic with id: {id} not found");
+            return StatusCode(Convert.ToInt32(response.StatusCode), response);
         }
     }
 
