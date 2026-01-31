@@ -20,43 +20,37 @@ namespace Forum.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTopics([FromQuery] int? pageNumber = 1, [FromQuery] int? pageSize = 10)
+        public async Task<IActionResult> GetAllTopics(
+            [FromQuery] int? pageNumber = 1,
+            [FromQuery] int? pageSize = 10)
         {
-            var result = await _topicService.GetAllTopicsAsync(
-                pageNumber: pageNumber,
-                pageSize: pageSize
-            );
+            var (topics, totalCount) = await _topicService.GetAllTopicsAsync(pageNumber, pageSize);
 
-            var response = new CommonResponse
+            return Ok(new CommonResponse
             {
                 Message = "Topics retrieved successfully",
                 StatusCode = HttpStatusCode.OK,
                 IsSuccess = true,
                 Result = new
                 {
-                    Topics = result.Topics,
-                    TotalCount = result.TotalCount
+                    Topics = topics,
+                    TotalCount = totalCount
                 }
-            };
-
-            return StatusCode(Convert.ToInt32(response.StatusCode), response);
+            });
         }
-
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleTopic(Guid id)
         {
             var result = await _topicService.GetTopicDetailsAsync(id);
 
-            var response = new CommonResponse
+            return Ok(new CommonResponse
             {
                 Message = "Topic retrieved successfully",
                 StatusCode = HttpStatusCode.OK,
                 IsSuccess = true,
                 Result = result
-            };
-
-            return StatusCode(Convert.ToInt32(response.StatusCode), response);
+            });
         }
 
         [HttpPost]
@@ -64,32 +58,27 @@ namespace Forum.API.Controllers
         {
             var result = await _topicService.AddNewTopicAsync(model);
 
-            var response = new CommonResponse
+            return StatusCode(StatusCodes.Status201Created, new CommonResponse
             {
                 Message = "Topic added successfully",
                 StatusCode = HttpStatusCode.Created,
                 IsSuccess = true,
                 Result = result
-            };
-
-            return StatusCode(Convert.ToInt32(response.StatusCode), response);
-
+            });
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateTopic([FromBody] TopicForUpdatingDto topic)
+        public async Task<IActionResult> UpdateTopic([FromBody] TopicForUpdatingDto model)
         {
-            var result = await _topicService.UpdateNewTopicAsync(topic);
+            var result = await _topicService.UpdateNewTopicAsync(model);
 
-            var response = new CommonResponse
+            return Ok(new CommonResponse
             {
-                Message = $"Topic with id: {topic.Id} updated successfully",
+                Message = $"Topic with id: {model.Id} updated successfully",
                 StatusCode = HttpStatusCode.OK,
                 IsSuccess = true,
                 Result = result
-            };
-
-            return StatusCode(Convert.ToInt32(response.StatusCode), response);
+            });
         }
 
         [HttpDelete("{id}")]
@@ -97,17 +86,16 @@ namespace Forum.API.Controllers
         {
             var result = await _topicService.DeleteTopicAsync(id);
 
-            var response = new CommonResponse
+            return Ok(new CommonResponse
             {
                 Message = $"Topic with id: {id} deleted successfully",
                 StatusCode = HttpStatusCode.OK,
                 IsSuccess = true,
                 Result = result
-            };
-
-            return StatusCode(Convert.ToInt32(response.StatusCode), response);
+            });
         }
     }
+
 
 
 }

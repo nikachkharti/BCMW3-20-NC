@@ -18,29 +18,32 @@ namespace Forum.API.Services
 
         public async Task<int> AddNewTopicAsync(TopicForCreatingDto model)
         {
-            ValidateTopicForCreatingDto(model);
-            await _topicRepository.AddAsync(_mapper.Map<Topic>(model));
+            ValidateCreateModel(model);
+
+            var entity = _mapper.Map<Topic>(model);
+            await _topicRepository.AddAsync(entity);
+
             return await _topicRepository.SaveAsync();
         }
 
         public async Task<int> DeleteTopicAsync(Guid topicId)
         {
-            var topicToDelete = await _topicRepository.GetAsync(t => t.Id == topicId);
+            ValidateGuid(topicId);
 
-            if (topicToDelete != null)
-            {
-                _topicRepository.Remove(topicToDelete);
-                return await _topicRepository.SaveAsync();
-            }
+            var topic = await _topicRepository.GetAsync(t => t.Id == topicId);
+            if (topic == null)
+                throw new ArgumentException($"Topic with id '{topicId}' not found.");
 
-            return 0;
+            _topicRepository.Remove(topic);
+            return await _topicRepository.SaveAsync();
         }
 
         public async Task<(List<TopicListForGettingDto> Topics, int TotalCount)> GetAllTopicsAsync(
             int? pageNumber,
-            int? pageSize
-        )
+            int? pageSize)
         {
+            ValidatePaging(pageNumber, pageSize);
+
             var result = await _topicRepository.GetAllAsync(
                 pageNumber: pageNumber,
                 pageSize: pageSize,
@@ -48,56 +51,82 @@ namespace Forum.API.Services
                 ascending: false
             );
 
-            if (result.Items.Count > 0)
-            {
-                var mappedResult = _mapper.Map<List<TopicListForGettingDto>>(result.Items);
-                return (mappedResult, result.TotalCount);
-            }
-
-            return (Enumerable
-                .Empty<TopicListForGettingDto>()
-                .ToList(), 0);
+            var topics = _mapper.Map<List<TopicListForGettingDto>>(result.Items);
+            return (topics, result.TotalCount);
         }
 
         public async Task<TopicDetailsForGettingDto> GetTopicDetailsAsync(Guid topicId)
         {
-            var result = await _topicRepository.GetAsync(t => t.Id == topicId, includeProperties: "Comments");
-            return _mapper.Map<TopicDetailsForGettingDto>(result);
+            ValidateGuid(topicId);
+
+            var topic = await _topicRepository.GetAsync(
+                t => t.Id == topicId,
+                includeProperties: "Comments"
+            );
+
+            if (topic == null)
+                throw new ArgumentException($"Topic with id '{topicId}' not found.");
+
+            return _mapper.Map<TopicDetailsForGettingDto>(topic);
         }
 
         public async Task<int> UpdateNewTopicAsync(TopicForUpdatingDto model)
         {
-            var topicToUpdate = await _topicRepository.GetAsync(t => t.Id == model.Id/*, tracking: false*/);
+            ValidateUpdateModel(model);
 
-            if (topicToUpdate != null)
-            {
-                //_topicRepository.Update(_mapper.Map<Topic>(model));
-                _mapper.Map(model, topicToUpdate);
-                return await _topicRepository.SaveAsync();
-            }
+            var topic = await _topicRepository.GetAsync(t => t.Id == model.Id);
+            if (topic == null)
+                throw new ArgumentException($"Topic with id '{model.Id}' not found.");
 
-            return 0;
+            _mapper.Map(model, topic);
+            return await _topicRepository.SaveAsync();
         }
+
 
 
         #region VALIDATORS
 
-
-        private static void ValidateTopicForCreatingDto(TopicForCreatingDto model)
+        private static void ValidateGuid(Guid id)
         {
-            if (string.IsNullOrWhiteSpace(model.Title))
-            {
-                throw new ArgumentException("Title is required.");
-            }
-            if (string.IsNullOrWhiteSpace(model.Content))
-            {
-                throw new ArgumentException("Content is required.");
-            }
+            if (id == Guid.Empty)
+                throw new ArgumentException("Invalid id.");
         }
 
+        private static void ValidateCreateModel(TopicForCreatingDto model)
+        {
+            if (model == null)
+                throw new ArgumentException("Request body is required.");
+
+            if (string.IsNullOrWhiteSpace(model.Title))
+                throw new ArgumentException("Title is required.");
+
+            if (string.IsNullOrWhiteSpace(model.Content))
+                throw new ArgumentException("Content is required.");
+        }
+
+        private static void ValidateUpdateModel(TopicForUpdatingDto model)
+        {
+            if (model == null)
+                throw new ArgumentException("Request body is required.");
+
+            ValidateGuid(model.Id);
+
+            if (string.IsNullOrWhiteSpace(model.Title))
+                throw new ArgumentException("Title is required.");
+
+            if (string.IsNullOrWhiteSpace(model.Content))
+                throw new ArgumentException("Content is required.");
+        }
+
+        private static void ValidatePaging(int? pageNumber, int? pageSize)
+        {
+            if (pageNumber <= 0)
+                throw new ArgumentException("PageNumber must be greater than 0.");
+
+            if (pageSize <= 0)
+                throw new ArgumentException("PageSize must be greater than 0.");
+        }
 
         #endregion
-
-
     }
 }
