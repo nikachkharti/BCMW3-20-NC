@@ -40,7 +40,7 @@ namespace Forum.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSingleTopic(Guid id)
+        public async Task<IActionResult> GetSingleTopic(string id)
         {
             var result = await _topicService.GetTopicDetailsAsync(id);
 
@@ -82,7 +82,7 @@ namespace Forum.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTopic(Guid id)
+        public async Task<IActionResult> DeleteTopic(string id)
         {
             var result = await _topicService.DeleteTopicAsync(id);
 

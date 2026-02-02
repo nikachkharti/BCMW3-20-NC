@@ -8,9 +8,9 @@ namespace Forum.API.Services
             int? pageNumber,
             int? pageSize
         );
-        Task<TopicDetailsForGettingDto> GetTopicDetailsAsync(Guid topicId);
+        Task<TopicDetailsForGettingDto> GetTopicDetailsAsync(string topicId);
         Task<int> AddNewTopicAsync(TopicForCreatingDto model);
         Task<int> UpdateNewTopicAsync(TopicForUpdatingDto model);
-        Task<int> DeleteTopicAsync(Guid topicId);
+        Task<int> DeleteTopicAsync(string topicId);
     }
 }

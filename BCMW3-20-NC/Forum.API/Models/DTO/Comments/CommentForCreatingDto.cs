@@ -8,7 +8,7 @@ namespace Forum.API.Models.DTO.Comments
          string Content,
 
         [Required]
-         Guid TopicId
+         string TopicId
         //DateTime CommentDate
     );
 }

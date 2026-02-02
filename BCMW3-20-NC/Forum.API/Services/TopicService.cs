@@ -26,7 +26,7 @@ namespace Forum.API.Services
             return await _topicRepository.SaveAsync();
         }
 
-        public async Task<int> DeleteTopicAsync(Guid topicId)
+        public async Task<int> DeleteTopicAsync(string topicId)
         {
             ValidateGuid(topicId);
 
@@ -55,7 +55,7 @@ namespace Forum.API.Services
             return (topics, result.TotalCount);
         }
 
-        public async Task<TopicDetailsForGettingDto> GetTopicDetailsAsync(Guid topicId)
+        public async Task<TopicDetailsForGettingDto> GetTopicDetailsAsync(string topicId)
         {
             ValidateGuid(topicId);
 
@@ -86,9 +86,9 @@ namespace Forum.API.Services
 
         #region VALIDATORS
 
-        private static void ValidateGuid(Guid id)
+        private static void ValidateGuid(string id)
         {
-            if (id == Guid.Empty)
+            if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException("Invalid id.");
         }
 

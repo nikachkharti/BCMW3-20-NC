@@ -5,7 +5,7 @@ namespace Forum.API.Models.DTO.Topics
     public record TopicForUpdatingDto
     (
         [Required]
-        Guid Id,
+        string Id,
 
         [Required]
         [MaxLength(50)]

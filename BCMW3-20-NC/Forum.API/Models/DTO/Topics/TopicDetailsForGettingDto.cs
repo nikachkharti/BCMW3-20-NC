@@ -4,7 +4,7 @@ namespace Forum.API.Models.DTO.Topics
 {
     public record TopicDetailsForGettingDto
     (
-        Guid Id,
+        string Id,
         string Title,
         string Content,
         DateTime CreateDate,

@@ -5,7 +5,7 @@ namespace Forum.API.Models.DTO.Comments
     public record CommentForUpdatingDto
     (
         [Required]
-        Guid Id,
+        string Id,
 
         [Required]
         string Content

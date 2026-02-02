@@ -2,7 +2,7 @@
 {
     public record TopicListForGettingDto
     (
-        Guid Id,
+        string Id,
         string Title,
         DateTime CreateDate
     );

@@ -2,7 +2,7 @@
 {
     public record CommentForGettingDto
     (
-         Guid Id,
+         string Id,
          string Content,
          DateTime CommentDate
     );

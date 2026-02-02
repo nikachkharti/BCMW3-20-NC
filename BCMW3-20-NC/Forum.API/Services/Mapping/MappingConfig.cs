@@ -1,4 +1,5 @@
 ﻿using Forum.API.Entities;
+using Forum.API.Models.DTO.Authentication;
 using Forum.API.Models.DTO.Comments;
 using Forum.API.Models.DTO.Topics;
 using Mapster;
@@ -34,6 +35,26 @@ namespace Forum.API.Services.Mapping
                 .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Content, src => src.Content)
                 .Map(dest => dest.CommentDate, src => src.CommentDate);
+
+
+            config.NewConfig<UserDto, ApplicationUser>()
+                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.Email, src => src.Email)
+                .Map(dest => dest.NormalizedEmail, src => src.Email.ToUpper())
+                .Map(dest => dest.UserName, src => src.Email)
+                .Map(dest => dest.NormalizedUserName, src => src.Email.ToUpper())
+                .Map(dest => dest.PhoneNumber, src => src.PhoneNumber);
+            config.NewConfig<ApplicationUser, UserDto>()
+                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.Email, src => src.Email)
+                .Map(dest => dest.PhoneNumber, src => src.PhoneNumber);
+
+            config.NewConfig<RegistrationRequestDto, ApplicationUser>()
+                .Map(dest => dest.UserName, src => src.Email)
+                .Map(dest => dest.NormalizedUserName, src => src.Email.ToUpper())
+                .Map(dest => dest.Email, src => src.Email)
+                .Map(dest => dest.NormalizedEmail, src => src.Email.ToUpper())
+                .Map(dest => dest.PhoneNumber, src => src.PhoneNumber);
         }
     }
 }
