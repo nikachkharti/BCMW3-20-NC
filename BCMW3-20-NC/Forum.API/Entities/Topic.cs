@@ -27,6 +27,11 @@ namespace Forum.API.Entities
 
         public bool CommentsAreAllowed { get; set; } = true;
 
+        [Required]
+        [ForeignKey(nameof(Author))]
+        public string AuthorId { get; set; }
+        public ApplicationUser Author { get; set; }
+
         public List<Comment> Comments { get; set; }
     }
 }
