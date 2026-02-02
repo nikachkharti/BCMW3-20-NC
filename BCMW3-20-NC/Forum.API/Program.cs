@@ -20,15 +20,26 @@ namespace Forum.API
 
             var builder = WebApplication.CreateBuilder(args);
 
+            //Controllers
             builder.Services.AddControllers();
+
+            //Swagger
             builder.Services.AddSwaggerGen();
 
             //DbContext
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerLocalConnection")));
 
+            //Repository
             builder.Services.AddScoped<ITopicRepository, TopicRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+            //Service
             builder.Services.AddScoped<ITopicService, TopicService>();
+            builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+
+            //Serilog
             builder.Host.UseSerilog((context, configuration) =>
             {
                 configuration.ReadFrom.Configuration(context.Configuration);
