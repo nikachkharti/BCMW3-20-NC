@@ -6,8 +6,10 @@ using Forum.API.Services;
 using Forum.API.Services.Mapping;
 using Mapster;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using Serilog;
 
 namespace Forum.API
@@ -24,7 +26,38 @@ namespace Forum.API
             builder.Services.AddControllers();
 
             //Swagger
-            builder.Services.AddSwaggerGen();
+
+
+            //builder.Services.AddSwaggerGen(options =>
+            //{
+            //    options.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
+            //    {
+            //        Name = "Authorization",
+            //        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+            //        In = ParameterLocation.Header,
+            //        Type = SecuritySchemeType.ApiKey,
+            //        Scheme = JwtBearerDefaults.AuthenticationScheme
+            //    });
+
+            //    options.AddSecurityRequirement(
+            //            new OpenApiSecurityRequirement()
+            //            {
+            //                {
+            //                    new OpenApiSecurityScheme
+            //                    {
+            //                        Reference = new OpenApiReference
+            //                        {
+            //                            Type = ReferenceType.SecurityScheme,
+            //                            Id = JwtBearerDefaults.AuthenticationScheme
+            //                        }
+            //                    },
+            //                    new string[]{}
+            //                }
+            //            }
+            //        );
+
+            //});
+
 
             //DbContext
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerLocalConnection")));

@@ -14,9 +14,9 @@ namespace Forum.API.Services
 
         public JwtTokenGenerator(IConfiguration configuration)
         {
-            _secret = configuration.GetValue<string>("JwtSettings:Secret");
-            _issuer = configuration.GetValue<string>("JwtSettings:Issuer");
-            _audience = configuration.GetValue<string>("JwtSettings:Audience");
+            _secret = configuration.GetValue<string>("JwtOptions:Secret");
+            _issuer = configuration.GetValue<string>("JwtOptions:Issuer");
+            _audience = configuration.GetValue<string>("JwtOptions:Audience");
         }
 
         public string GenerateToken(ApplicationUser applicationUser, IEnumerable<string> roles)
@@ -28,7 +28,7 @@ namespace Forum.API.Services
                 new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Id),
                 new Claim(JwtRegisteredClaimNames.Email, applicationUser.Email),
                 new Claim(JwtRegisteredClaimNames.Name, applicationUser.UserName),
-                new Claim(JwtRegisteredClaimNames.Name, applicationUser.FullName),
+                new Claim("fullname", applicationUser.FullName)
             };
 
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
