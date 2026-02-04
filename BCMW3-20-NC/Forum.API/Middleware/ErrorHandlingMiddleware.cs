@@ -1,4 +1,5 @@
-﻿using Forum.API.Models;
+﻿using Forum.API.Exceptions;
+using Forum.API.Models;
 using System.Net;
 
 namespace Forum.API.Middleware
@@ -34,6 +35,16 @@ namespace Forum.API.Middleware
                 case ArgumentException:
                     apiResponse.Message = ex.Message;
                     apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                    apiResponse.IsSuccess = false;
+                    break;
+                case BadRequestException:
+                    apiResponse.Message = ex.Message;
+                    apiResponse.StatusCode = HttpStatusCode.BadRequest;
+                    apiResponse.IsSuccess = false;
+                    break;
+                case NotFoundException:
+                    apiResponse.Message = ex.Message;
+                    apiResponse.StatusCode = HttpStatusCode.NotFound;
                     apiResponse.IsSuccess = false;
                     break;
                 case Exception:
