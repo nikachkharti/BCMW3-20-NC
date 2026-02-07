@@ -9,8 +9,13 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Serilog;
+using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
+using System.Text;
 
 namespace Forum.API
 {
@@ -26,38 +31,35 @@ namespace Forum.API
             builder.Services.AddControllers();
 
             //Swagger
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http, // Changed from ApiKey
+                    Scheme = "bearer",             // Must be lowercase "bearer"
+                    BearerFormat = "JWT",
+                    Description = "Just paste your token below (without the 'Bearer ' prefix)"
+                });
 
+                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                });
 
-            //builder.Services.AddSwaggerGen(options =>
-            //{
-            //    options.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
-            //    {
-            //        Name = "Authorization",
-            //        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
-            //        In = ParameterLocation.Header,
-            //        Type = SecuritySchemeType.ApiKey,
-            //        Scheme = JwtBearerDefaults.AuthenticationScheme
-            //    });
+                #region XML documentation
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+                #endregion
 
-            //    options.AddSecurityRequirement(
-            //            new OpenApiSecurityRequirement()
-            //            {
-            //                {
-            //                    new OpenApiSecurityScheme
-            //                    {
-            //                        Reference = new OpenApiReference
-            //                        {
-            //                            Type = ReferenceType.SecurityScheme,
-            //                            Id = JwtBearerDefaults.AuthenticationScheme
-            //                        }
-            //                    },
-            //                    new string[]{}
-            //                }
-            //            }
-            //        );
+                #region Examples
+                options.ExampleFilters();
+                #endregion
 
-            //});
-
+            });
+            builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
             //DbContext
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerLocalConnection")));
@@ -97,6 +99,33 @@ namespace Forum.API
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+
+            //Token Authentication logic
+            var issuer = builder.Configuration["JwtOptions:Issuer"];
+            var secret = builder.Configuration["JwtOptions:Secret"];
+            var audience = builder.Configuration["JwtOptions:Audience"];
+            var key = Encoding.ASCII.GetBytes(secret);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true, // Ensure token doesn't expired
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidIssuer = issuer,
+                    ValidAudience = audience
+                };
+            });
+
 
 
             var app = builder.Build();

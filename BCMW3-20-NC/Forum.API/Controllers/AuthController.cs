@@ -3,6 +3,7 @@ using Forum.API.Models.DTO.Auth;
 using Forum.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
 using System.Net;
 
 namespace Forum.API.Controllers
@@ -17,7 +18,12 @@ namespace Forum.API.Controllers
             _authService = authService;
         }
 
+
+        /// <summary>
+        /// მომხმარებლის რეგისტრაცია
+        /// </summary>
         [HttpPost("register")]
+        [SwaggerRequestExample(typeof(RegistrationRequestDto), typeof(RegistrationRequestDtoExample))]
         public async Task<IActionResult> Register([FromBody] RegistrationRequestDto model)
         {
             var customerId = await _authService.Register(model);
@@ -31,8 +37,12 @@ namespace Forum.API.Controllers
             });
         }
 
+        /// <summary>
+        /// ადმინის რეგისტრაცია
+        /// </summary>
         [Authorize(Roles = "Admin")]
         [HttpPost("register-admin")]
+        [SwaggerRequestExample(typeof(RegistrationRequestDto), typeof(RegistrationAdminRequestDtoExample))]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegistrationRequestDto model)
         {
             var adminId = await _authService.RegisterAdmin(model);
@@ -46,7 +56,12 @@ namespace Forum.API.Controllers
             });
         }
 
+
+        /// <summary>
+        /// ავტორიზაცია
+        /// </summary>
         [HttpPost("login")]
+        [SwaggerRequestExample(typeof(LoginRequestDto), typeof(LoginCustomerRequestDtoExample))]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
         {
             var loginResponse = await _authService.Login(model);
