@@ -119,7 +119,9 @@ namespace Forum.API
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = true, // Ensure token doesn't expired
+                    ValidateLifetime = true, // Reject expired tokens
+                    //By default, .NET allows a 5-minute grace period after expiration Timespan.Zero means strict expiration
+                    //ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidIssuer = issuer,
                     ValidAudience = audience
