@@ -47,6 +47,11 @@ namespace Forum.API.Middleware
                     apiResponse.StatusCode = HttpStatusCode.NotFound;
                     apiResponse.IsSuccess = false;
                     break;
+                case ForbidException:
+                    apiResponse.Message = ex.Message;
+                    apiResponse.StatusCode = HttpStatusCode.Forbidden;
+                    apiResponse.IsSuccess = false;
+                    break;
                 case Exception:
                     apiResponse.Message = ex.Message;
                     apiResponse.StatusCode = HttpStatusCode.InternalServerError;

@@ -1,7 +1,9 @@
 ﻿using Forum.API.Entities;
+using Forum.API.Exceptions;
 using Forum.API.Models.DTO.Topics;
 using Forum.API.Repository;
 using MapsterMapper;
+using System.Security.Claims;
 
 namespace Forum.API.Services
 {
@@ -9,18 +11,27 @@ namespace Forum.API.Services
     {
         private readonly ITopicRepository _topicRepository;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TopicService(ITopicRepository topicRepository, IMapper mapper)
+        public TopicService(ITopicRepository topicRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _topicRepository = topicRepository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<int> AddNewTopicAsync(TopicForCreatingDto model)
         {
             ValidateCreateModel(model);
 
+            var authenticatedUserId = AuthenticatedUserId();
+
+            if (string.IsNullOrWhiteSpace(authenticatedUserId))
+                throw new ForbidException("Unable to add topic for unauthorzied user");
+
             var entity = _mapper.Map<Topic>(model);
+            entity.AuthorId = authenticatedUserId;
+
             await _topicRepository.AddAsync(entity);
 
             return await _topicRepository.SaveAsync();
@@ -31,8 +42,12 @@ namespace Forum.API.Services
             ValidateGuid(topicId);
 
             var topic = await _topicRepository.GetAsync(t => t.Id == topicId);
+
             if (topic == null)
                 throw new ArgumentException($"Topic with id '{topicId}' not found.");
+
+            if (!UserCanModifyContent(topic))
+                throw new ForbidException($"Authenticated user have no permission");
 
             _topicRepository.Remove(topic);
             return await _topicRepository.SaveAsync();
@@ -70,18 +85,45 @@ namespace Forum.API.Services
             return _mapper.Map<TopicDetailsForGettingDto>(topic);
         }
 
-        public async Task<int> UpdateNewTopicAsync(TopicForUpdatingDto model)
+        public async Task<int> UpdateTopicAsync(TopicForUpdatingDto model)
         {
             ValidateUpdateModel(model);
 
             var topic = await _topicRepository.GetAsync(t => t.Id == model.Id);
+
             if (topic == null)
                 throw new ArgumentException($"Topic with id '{model.Id}' not found.");
+
+            if (!UserCanModifyContent(topic))
+                throw new ForbidException($"Authenticated user have no permission");
 
             _mapper.Map(model, topic);
             return await _topicRepository.SaveAsync();
         }
 
+
+        #region HELPERS
+
+        private bool UserCanModifyContent(Topic content)
+        {
+            string authenticatedUserId = AuthenticatedUserId();
+
+            if (string.IsNullOrWhiteSpace(authenticatedUserId))
+                return false;
+
+            if (content.AuthorId.Trim() != authenticatedUserId.Trim())
+                return false;
+
+            return true;
+        }
+
+        private string AuthenticatedUserId() =>
+            _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated == true
+                ? _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)
+                : string.Empty;
+
+
+        #endregion
 
 
         #region VALIDATORS

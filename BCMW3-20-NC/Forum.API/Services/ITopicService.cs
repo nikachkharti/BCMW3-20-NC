@@ -10,7 +10,7 @@ namespace Forum.API.Services
         );
         Task<TopicDetailsForGettingDto> GetTopicDetailsAsync(Guid topicId);
         Task<int> AddNewTopicAsync(TopicForCreatingDto model);
-        Task<int> UpdateNewTopicAsync(TopicForUpdatingDto model);
+        Task<int> UpdateTopicAsync(TopicForUpdatingDto model);
         Task<int> DeleteTopicAsync(Guid topicId);
     }
 }

@@ -75,7 +75,7 @@ namespace Forum.API.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateTopic([FromBody] TopicForUpdatingDto model)
         {
-            var result = await _topicService.UpdateNewTopicAsync(model);
+            var result = await _topicService.UpdateTopicAsync(model);
 
             return Ok(new CommonResponse
             {
