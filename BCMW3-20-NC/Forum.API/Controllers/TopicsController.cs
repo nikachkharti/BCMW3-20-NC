@@ -70,7 +70,6 @@ namespace Forum.API.Controllers
         }
 
 
-        //TODO: ტოპიკის შეცვლა უნდა შეეძლოთ მხოლოდ იმ user - ებს, რომლებიც არიან ამ ტოპიკების ავტორები და ამადროულად სისტემაში არიან ავტორიზირებულები
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> UpdateTopic([FromBody] TopicForUpdatingDto model)
@@ -87,7 +86,6 @@ namespace Forum.API.Controllers
         }
 
 
-        //TODO: ტოპიკის წაშლა უნდა შეეძლოთ მხოლოდ იმ user - ებს, რომლებიც არიან ამ ტოპიკების ავტორები და ამადროულად სისტემაში არიან ავტორიზირებულები
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteTopic(Guid id)
