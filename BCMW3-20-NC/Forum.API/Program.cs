@@ -48,11 +48,15 @@ namespace Forum.API
                     [new OpenApiSecuritySchemeReference("Bearer", document)] = []
                 });
 
+
+
                 #region XML documentation
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
                 #endregion
+
+
 
                 #region Examples
                 options.ExampleFilters();

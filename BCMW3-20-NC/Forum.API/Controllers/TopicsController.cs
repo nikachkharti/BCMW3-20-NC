@@ -2,6 +2,7 @@
 using Forum.API.Models;
 using Forum.API.Models.DTO.Topics;
 using Forum.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -54,6 +55,7 @@ namespace Forum.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddNewTopic([FromBody] TopicForCreatingDto model)
         {
             var result = await _topicService.AddNewTopicAsync(model);
@@ -67,7 +69,10 @@ namespace Forum.API.Controllers
             });
         }
 
+
+        //TODO: ტოპიკის შეცვლა უნდა შეეძლოთ მხოლოდ იმ user - ებს, რომლებიც არიან ამ ტოპიკების ავტორები და ამადროულად სისტემაში არიან ავტორიზირებულები
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateTopic([FromBody] TopicForUpdatingDto model)
         {
             var result = await _topicService.UpdateNewTopicAsync(model);
@@ -81,7 +86,10 @@ namespace Forum.API.Controllers
             });
         }
 
+
+        //TODO: ტოპიკის წაშლა უნდა შეეძლოთ მხოლოდ იმ user - ებს, რომლებიც არიან ამ ტოპიკების ავტორები და ამადროულად სისტემაში არიან ავტორიზირებულები
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteTopic(Guid id)
         {
             var result = await _topicService.DeleteTopicAsync(id);
