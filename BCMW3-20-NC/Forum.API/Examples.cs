@@ -1,4 +1,4 @@
-﻿using Forum.API.Models.DTO.Auth;
+﻿using Forum.API.Application.DTO.Auth;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Forum.API

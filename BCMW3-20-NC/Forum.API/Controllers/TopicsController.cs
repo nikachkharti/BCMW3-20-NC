@@ -1,7 +1,6 @@
-﻿using Forum.API.Entities;
-using Forum.API.Models;
-using Forum.API.Models.DTO.Topics;
-using Forum.API.Services;
+﻿using Forum.API.Application.DTO.Topics;
+using Forum.Application.Contracts.Service;
+using Forum.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

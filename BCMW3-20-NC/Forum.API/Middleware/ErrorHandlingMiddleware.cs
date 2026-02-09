@@ -1,5 +1,5 @@
-﻿using Forum.API.Exceptions;
-using Forum.API.Models;
+﻿using Forum.Application.Exceptions;
+using Forum.Application.Models;
 using System.Net;
 
 namespace Forum.API.Middleware

@@ -1,6 +1,6 @@
-﻿using Forum.API.Models;
-using Forum.API.Models.DTO.Auth;
-using Forum.API.Services;
+﻿using Forum.API.Application.DTO.Auth;
+using Forum.Application.Contracts.Service;
+using Forum.Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;

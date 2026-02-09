@@ -1,4 +1,4 @@
-﻿using Forum.API.Data;
+﻿using Forum.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
