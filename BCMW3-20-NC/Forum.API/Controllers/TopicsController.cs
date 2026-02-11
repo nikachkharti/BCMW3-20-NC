@@ -19,6 +19,9 @@ namespace Forum.API.Controllers
             _topicService = topicService;
         }
 
+        /// <summary>
+        /// ყველაა პოსტი
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllTopics(
             [FromQuery] int? pageNumber = 1,
@@ -39,6 +42,10 @@ namespace Forum.API.Controllers
             });
         }
 
+
+        /// <summary>
+        /// პოსტი დეტალურად
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleTopic(Guid id)
         {
@@ -53,9 +60,12 @@ namespace Forum.API.Controllers
             });
         }
 
+        /// <summary>
+        /// ახალი პოსტი
+        /// </summary>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddNewTopic([FromBody] TopicForCreatingDto model)
+        public async Task<IActionResult> AddNewTopic([FromForm] TopicForCreatingDto model)
         {
             var result = await _topicService.AddNewTopicAsync(model);
 
@@ -68,7 +78,9 @@ namespace Forum.API.Controllers
             });
         }
 
-
+        /// <summary>
+        /// არსებული პოსტის განახლება
+        /// </summary>
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> UpdateTopic([FromBody] TopicForUpdatingDto model)
@@ -84,7 +96,9 @@ namespace Forum.API.Controllers
             });
         }
 
-
+        /// <summary>
+        /// არსებული პოსტის წაშლა
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteTopic(Guid id)

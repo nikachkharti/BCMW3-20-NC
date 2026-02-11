@@ -2,10 +2,12 @@
 using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Exceptions;
+using Forum.Application.Models.Cloudinary;
 using Forum.Domain.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Forum.Application.Services
 {
@@ -14,17 +16,22 @@ namespace Forum.Application.Services
         private readonly ITopicRepository _topicRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICloudinaryImageService _cloudinaryImageService;
+        private const int _width = 200;
+        private const int _height = 200;
 
-        public TopicService(ITopicRepository topicRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public TopicService(ITopicRepository topicRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService)
         {
             _topicRepository = topicRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _cloudinaryImageService = cloudinaryImageService;
         }
 
         public async Task<int> AddNewTopicAsync(TopicForCreatingDto model)
         {
             ValidateCreateModel(model);
+            var uploadResult = await _cloudinaryImageService.UploadAsync(model.Avatar, _width, _height, folder: "topics");
 
             var authenticatedUserId = AuthenticatedUserId();
 
@@ -33,10 +40,19 @@ namespace Forum.Application.Services
 
             var entity = _mapper.Map<Topic>(model);
             entity.AuthorId = authenticatedUserId;
+            entity.ImageUrl = uploadResult.Url;
+            entity.ImagePublicId = uploadResult.PublicId;
 
-            await _topicRepository.AddAsync(entity);
-
-            return await _topicRepository.SaveAsync();
+            try
+            {
+                await _topicRepository.AddAsync(entity);
+                return await _topicRepository.SaveAsync();
+            }
+            catch
+            {
+                await _cloudinaryImageService.DeleteAsync(uploadResult.PublicId);
+                throw;
+            }
         }
 
         public async Task<int> DeleteTopicAsync(Guid topicId)
@@ -49,11 +65,20 @@ namespace Forum.Application.Services
                 throw new ArgumentException($"Topic with id '{topicId}' not found.");
 
             if (!UserCanModifyContent(topic))
-                throw new ForbidException($"Authenticated user have no permission");
+                throw new ForbidException("Authenticated user have no permission");
+
 
             _topicRepository.Remove(topic);
-            return await _topicRepository.SaveAsync();
+            int result = await _topicRepository.SaveAsync();
+
+            if (result > 0 && !string.IsNullOrWhiteSpace(topic.ImagePublicId))
+            {
+                await _cloudinaryImageService.DeleteAsync(topic.ImagePublicId);
+            }
+
+            return result;
         }
+
 
         public async Task<(List<TopicListForGettingDto> Topics, int TotalCount)> GetAllTopicsAsync(
             int? pageNumber,
@@ -118,7 +143,6 @@ namespace Forum.Application.Services
 
             return true;
         }
-
         private string AuthenticatedUserId() =>
             _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated == true
                 ? _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)
@@ -146,6 +170,9 @@ namespace Forum.Application.Services
 
             if (string.IsNullOrWhiteSpace(model.Content))
                 throw new ArgumentException("Content is required.");
+
+            if (model.Avatar is null || model.Avatar.Length == 0)
+                throw new BadRequestException($"Image is required parameter for topic");
         }
 
         private static void ValidateUpdateModel(TopicForUpdatingDto model)

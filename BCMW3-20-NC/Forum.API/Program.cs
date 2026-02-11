@@ -1,7 +1,9 @@
+using CloudinaryDotNet;
 using Forum.API.Middleware;
 using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Mapping;
+using Forum.Application.Models.Cloudinary;
 using Forum.Application.Services;
 using Forum.Domain.Entities;
 using Forum.Infrastructure.Data;
@@ -134,6 +136,20 @@ namespace Forum.API
                 };
             });
 
+
+            //Cloudinary
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+
+            var cloudinarySettings = builder.Configuration.GetSection("Cloudinary").Get<CloudinarySettings>();
+            Console.WriteLine($"Cloudinary Name: {cloudinarySettings.CloudName}");
+            Console.WriteLine($"Cloudinary Api Key: {cloudinarySettings.ApiKey}");
+            Console.WriteLine($"Cloudinary Api Secret: {cloudinarySettings.ApiSecret}");
+
+            var account = new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret);
+
+            var cloudinary = new Cloudinary(account) { Api = { Secure = true } };
+            builder.Services.AddSingleton(cloudinary);
+            builder.Services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
 
 
             var app = builder.Build();

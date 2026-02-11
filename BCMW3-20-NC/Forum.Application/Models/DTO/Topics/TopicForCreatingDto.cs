@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Forum.API.Application.DTO.Topics
 {
@@ -11,9 +11,11 @@ namespace Forum.API.Application.DTO.Topics
         //[Required]
         string Content,
 
-        string ImageUrl
+        //string ImageUrl,
         //DateTime CreateDate,
         //DateTime LastCommentDate,
         //bool CommentsAreAllowed
+
+        IFormFile Avatar
     );
 }

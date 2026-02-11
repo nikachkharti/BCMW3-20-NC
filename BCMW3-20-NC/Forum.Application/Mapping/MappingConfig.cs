@@ -12,8 +12,7 @@ namespace Forum.Application.Mapping
         {
             config.NewConfig<TopicForCreatingDto, Topic>()
                 .Map(dest => dest.Title, src => src.Title)
-                .Map(dest => dest.Content, src => src.Content)
-                .Map(dest => dest.ImageUrl, src => src.ImageUrl);
+                .Map(dest => dest.Content, src => src.Content);
 
             config.NewConfig<Topic, TopicListForGettingDto>()
                 .Map(dest => dest.Id, src => src.Id)
@@ -26,6 +25,7 @@ namespace Forum.Application.Mapping
                 .Map(dest => dest.Content, src => src.Content)
                 .Map(dest => dest.CreateDate, src => src.CreateDate)
                 .Map(dest => dest.ImageUrl, src => src.ImageUrl)
+                .Map(dest => dest.ImagePublicId, src => src.ImagePublicId)
                 .Map(dest => dest.LastCommentDate, src => src.LastCommentDate)
                 .Map(dest => dest.CommentsAreAllowed, src => src.CommentsAreAllowed)
                 .Map(dest => dest.Comments, src => src.Comments);

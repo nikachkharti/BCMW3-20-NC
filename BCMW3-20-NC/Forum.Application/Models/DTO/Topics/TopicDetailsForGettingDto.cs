@@ -9,6 +9,7 @@ namespace Forum.API.Application.DTO.Topics
         string Content,
         DateTime CreateDate,
         string ImageUrl,
+        string ImagePublicId,
         DateTime LastCommentDate,
         bool CommentsAreAllowed,
         List<CommentForGettingDto> Comments
