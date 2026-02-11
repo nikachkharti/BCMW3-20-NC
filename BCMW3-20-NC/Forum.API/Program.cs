@@ -72,6 +72,7 @@ namespace Forum.API
             //Repository
             builder.Services.AddScoped<ITopicRepository, TopicRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             //Service
             builder.Services.AddScoped<ITopicService, TopicService>();
