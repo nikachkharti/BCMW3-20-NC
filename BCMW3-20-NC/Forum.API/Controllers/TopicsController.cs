@@ -13,10 +13,12 @@ namespace Forum.API.Controllers
     public class TopicsController : ControllerBase
     {
         private readonly ITopicService _topicService;
+        private readonly ICommentService _commentService;
 
-        public TopicsController(ITopicService topicService)
+        public TopicsController(ITopicService topicService, ICommentService commentService)
         {
             _topicService = topicService;
+            _commentService = commentService;
         }
 
         /// <summary>
@@ -118,6 +120,39 @@ namespace Forum.API.Controllers
                 Result = result
             });
         }
+
+
+        /// <summary>
+        /// არსებულ პოსტზე კომენტარის დამატება.დაამატოს მხოლოდ ავტორმა, განახლდეს ტოპიკის LastCommentDate თარიღი
+        /// </summary>
+        [HttpPost("{topicId}/comments")]
+        [Authorize]
+        public async Task<IActionResult> AddComent(Guid topicId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// არსებულ პოსტზე კომენტარის განახლება.განაახლოს მხოლოდ ავტორმა
+        /// </summary>
+        [HttpPut("{topicId}/comments")]
+        [Authorize]
+        public async Task<IActionResult> UpdateComent(Guid topicId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// არსებულ პოსტზე კომენტარის წაშლა. წაშალოს მხოლოდ ავტორმა
+        /// </summary>
+        [HttpDelete("{topicId}/comments")]
+        [Authorize]
+        public async Task<IActionResult> DeleteComent(Guid topicId)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 
 

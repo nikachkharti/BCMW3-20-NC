@@ -80,6 +80,7 @@ namespace Forum.API
             builder.Services.AddScoped<ITopicService, TopicService>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
 
 
             //Serilog

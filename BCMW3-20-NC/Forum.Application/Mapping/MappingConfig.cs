@@ -1,4 +1,5 @@
 ﻿using Forum.API.Application.DTO.Auth;
+using Forum.API.Application.DTO.Comments;
 using Forum.API.Application.DTO.Topics;
 using Forum.API.Models.DTO.Comments;
 using Forum.Domain.Entities;
@@ -35,6 +36,14 @@ namespace Forum.Application.Mapping
                 .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Content, src => src.Content)
                 .Map(dest => dest.CommentDate, src => src.CommentDate);
+
+            config.NewConfig<CommentForCreatingDto, Comment>()
+                .Map(dest => dest.Content, src => src.Content)
+                .Map(dest => dest.TopicId, src => src.TopicId);
+
+            config.NewConfig<CommentForUpdatingDto, Comment>()
+                .Map(dest => dest.Content, src => src.Content)
+                .Map(dest => dest.Id, src => src.Id);
 
 
             config.NewConfig<RegistrationRequestDto, ApplicationUser>()
