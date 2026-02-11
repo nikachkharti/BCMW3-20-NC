@@ -1,16 +1,17 @@
-﻿using Forum.Application.Contracts.Service;
+﻿using Forum.Application.Contracts.Repository;
+using Forum.Application.Contracts.Service;
 using MapsterMapper;
 
 namespace Forum.Application.Services
 {
     public class CommentService : ICommentService
     {
-        private readonly ICommentService _commentService;
+        private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
 
-        public CommentService(ICommentService commentService, IMapper mapper)
+        public CommentService(ICommentRepository commentRepository, IMapper mapper)
         {
-            _commentService = commentService;
+            _commentRepository = commentRepository;
             _mapper = mapper;
         }
     }
