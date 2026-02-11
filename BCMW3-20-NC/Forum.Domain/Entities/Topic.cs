@@ -21,9 +21,10 @@ namespace Forum.Domain.Entities
         public DateTime CreateDate { get; set; } = DateTime.Now;
 
         public string ImageUrl { get; set; }
+        public string ImagePublicId { get; set; }
 
         [Column(TypeName = "Date")]
-        public DateTime LastCommentDate { get; set; }
+        public DateTime? LastCommentDate { get; set; } = null;
 
         public bool CommentsAreAllowed { get; set; } = true;
 

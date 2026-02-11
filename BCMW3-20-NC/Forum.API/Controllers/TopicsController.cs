@@ -55,7 +55,7 @@ namespace Forum.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddNewTopic([FromBody] TopicForCreatingDto model)
+        public async Task<IActionResult> AddNewTopic([FromForm] TopicForCreatingDto model)
         {
             var result = await _topicService.AddNewTopicAsync(model);
 
