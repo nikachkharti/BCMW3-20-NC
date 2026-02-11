@@ -17,7 +17,7 @@ namespace Forum.API
         {
             return new RegistrationRequestDto()
             {
-                Email = "rezo@gmai.com",
+                Email = "rezo@gmail.com",
                 FullName = "Revaz Revazishvili",
                 Password = "Rezo123!"
             };
@@ -29,7 +29,7 @@ namespace Forum.API
         {
             return new RegistrationRequestDto()
             {
-                Email = "admin2@gmai.com",
+                Email = "admin2@gmail.com",
                 FullName = "Admin2 Admin2",
                 Password = "Admin123!"
             };
