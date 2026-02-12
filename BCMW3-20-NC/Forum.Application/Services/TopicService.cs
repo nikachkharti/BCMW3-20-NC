@@ -71,9 +71,7 @@ namespace Forum.Application.Services
             int result = await _topicRepository.SaveAsync();
 
             if (result > 0 && !string.IsNullOrWhiteSpace(topic.ImagePublicId))
-            {
                 await _cloudinaryImageService.DeleteAsync(topic.ImagePublicId);
-            }
 
             return result;
         }
