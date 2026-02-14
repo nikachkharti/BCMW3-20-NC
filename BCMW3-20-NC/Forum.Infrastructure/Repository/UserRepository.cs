@@ -51,5 +51,18 @@ namespace Forum.Infrastructure.Repository
         {
             return await _roleManager.CreateAsync(role);
         }
+        public async Task<IdentityResult> LockUserAccount(ApplicationUser user)
+        {
+            return await _userManager.SetLockoutEnabledAsync(user, enabled: true);
+        }
+        public async Task<IdentityResult> UnlockUserAccount(ApplicationUser user)
+        {
+            return await _userManager.SetLockoutEnabledAsync(user, enabled: false);
+        }
+        public async Task<ApplicationUser> GetByIdAsync(string userId)
+        {
+            return await _context.ApplicationUsers
+                .FirstOrDefaultAsync(x => x.Id.ToLower().Trim() == userId.ToLower().Trim());
+        }
     }
 }

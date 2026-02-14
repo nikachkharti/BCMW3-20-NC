@@ -54,7 +54,8 @@ namespace Forum.Application.Mapping
                 .Map(dest => dest.NormalizedUserName, src => src.Email.ToUpper())
                 .Map(dest => dest.Email, src => src.Email)
                 .Map(dest => dest.NormalizedEmail, src => src.Email.ToUpper())
-                .Map(dest => dest.FullName, src => src.FullName);
+                .Map(dest => dest.FullName, src => src.FullName)
+                .Map(dest => dest.LockoutEnabled, src => true);
 
             config.NewConfig<ApplicationUser, AuthorForGettingDto>()
                 .Map(dest => dest.Id, src => src.Id)

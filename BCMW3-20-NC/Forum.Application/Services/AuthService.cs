@@ -33,10 +33,14 @@ namespace Forum.Application.Services
             if (user == null)
                 throw new BadRequestException($"[Login Failure] User with username: {loginRequestDto.UserName} not found.");
 
+            if (user.LockoutEnabled)
+                throw new BadRequestException($"[Login Failure] User account is inactive");
+
             bool isPasswordValid = await _userRepository.IsPasswordValidAsync(user, loginRequestDto.Password);
 
             if (!isPasswordValid)
                 throw new BadRequestException($"[Login Failure] Incorrect password");
+
 
             var roles = await _userRepository.GetRolesAsync(user);
             var token = _jwtTokenGenerator.GenerateToken(user, roles);
@@ -48,6 +52,25 @@ namespace Forum.Application.Services
         }
         public Task<string> Register(RegistrationRequestDto dto) => RegisterInternal(dto, _customerRoleName, "Customer");
         public Task<string> RegisterAdmin(RegistrationRequestDto dto) => RegisterInternal(dto, _adminRoleName, "Admin");
+        public async Task<bool> TryUnlockUserAccount(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+                throw new BadRequestException($"[Account Unlock Failure] {userId} is invalid");
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException($"[Account Unlock Failure] User with id: {userId} not found.");
+
+            if (user.LockoutEnabled)
+            {
+                var result = await _userRepository.UnlockUserAccount(user);
+                return result is not null && result.Succeeded;
+            }
+
+            return false;
+        }
+
 
 
 
@@ -71,6 +94,11 @@ namespace Forum.Application.Services
 
                 await EnsureRoleExists(roleName);
                 await _userRepository.AddToRoleAsync(userToReturn, roleName);
+
+                //Lock account by default while registration if no admin
+                await (roleName != _adminRoleName
+                    ? _userRepository.LockUserAccount(user)
+                    : _userRepository.UnlockUserAccount(user));
 
                 return userToReturn.Id;
             }
