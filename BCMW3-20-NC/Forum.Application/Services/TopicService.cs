@@ -2,9 +2,11 @@
 using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Exceptions;
+using Forum.Application.Models.DTO.Comments;
 using Forum.Domain.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Forum.Application.Services
@@ -99,7 +101,9 @@ namespace Forum.Application.Services
 
             var topic = await _topicRepository.GetAsync(
                 t => t.Id == topicId,
-                includeProperties: "Comments"
+                includes:
+                    t => t.Include(t => t.Comments)
+                        .ThenInclude(c => c.Author)
             );
 
             if (topic == null)

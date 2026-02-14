@@ -2,6 +2,7 @@
 using Forum.API.Application.DTO.Comments;
 using Forum.API.Application.DTO.Topics;
 using Forum.API.Models.DTO.Comments;
+using Forum.Application.Models.DTO.Comments;
 using Forum.Domain.Entities;
 using Mapster;
 
@@ -35,7 +36,9 @@ namespace Forum.Application.Mapping
             config.NewConfig<Comment, CommentForGettingDto>()
                 .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Content, src => src.Content)
-                .Map(dest => dest.CommentDate, src => src.CommentDate);
+                .Map(dest => dest.CommentDate, src => src.CommentDate)
+                .Map(dest => dest.ImageUrl, src => src.ImageUrl)
+                .Map(dest => dest.AuthorOfComment, src => src.Author);
 
             config.NewConfig<CommentForCreatingDto, Comment>()
                 .Map(dest => dest.Content, src => src.Content)
@@ -51,6 +54,11 @@ namespace Forum.Application.Mapping
                 .Map(dest => dest.NormalizedUserName, src => src.Email.ToUpper())
                 .Map(dest => dest.Email, src => src.Email)
                 .Map(dest => dest.NormalizedEmail, src => src.Email.ToUpper())
+                .Map(dest => dest.FullName, src => src.FullName);
+
+            config.NewConfig<ApplicationUser, AuthorForGettingDto>()
+                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.UserName, src => src.Email)
                 .Map(dest => dest.FullName, src => src.FullName);
         }
     }

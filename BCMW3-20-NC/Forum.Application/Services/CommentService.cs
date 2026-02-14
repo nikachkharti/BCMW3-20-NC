@@ -76,7 +76,7 @@ namespace Forum.Application.Services
 
             return result;
         }
-        public Task<int> UpdateCommentAsync(CommentForUpdatingDto model)
+        public async Task<int> UpdateCommentAsync(CommentForUpdatingDto model)
         {
             throw new NotImplementedException();
         }
