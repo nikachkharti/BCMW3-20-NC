@@ -5,6 +5,7 @@ using Forum.Application.Exceptions;
 using Forum.Domain.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.Design;
 using System.Security.Claims;
 
 namespace Forum.Application.Services
@@ -63,7 +64,7 @@ namespace Forum.Application.Services
             var comment = await _commentRepository.GetAsync(c => c.Id == commentId);
 
             if (comment == null)
-                throw new ArgumentException($"Comment with id '{commentId}' not found.");
+                throw new NotFoundException($"Comment with id '{commentId}' not found.");
 
             if (!UserCanModifyContent(comment))
                 throw new ForbidException($"Authenticated user have no permission");
@@ -78,7 +79,37 @@ namespace Forum.Application.Services
         }
         public async Task<int> UpdateCommentAsync(CommentForUpdatingDto model)
         {
-            throw new NotImplementedException();
+            ValidateUpdateModel(model);
+
+            var comment = await _commentRepository.GetAsync(c => c.Id == model.Id);
+
+            if (comment == null)
+                throw new NotFoundException($"Comment with id '{model.Id}' not found.");
+
+            var authenticatedUserId = AuthenticatedUserId();
+
+            if (!UserCanModifyContent(comment))
+                throw new ForbidException("Authenticated user have no permission.");
+
+            //PATCH BEHAVIOR
+            if (!string.IsNullOrWhiteSpace(model.Content))
+                comment.Content = model.Content;
+
+            if (model.Image != null && !string.IsNullOrWhiteSpace(comment.ImagePublicId))
+            {
+                var updateResult = await _cloudinaryImageService.UpdateAsync
+                (
+                   publicId: comment.ImagePublicId,
+                   _width,
+                   _height,
+                   model.Image
+                );
+
+                comment.ImageUrl = updateResult.Url;
+                comment.ImagePublicId = updateResult.PublicId;
+            }
+
+            return await _commentRepository.SaveAsync();
         }
 
 
@@ -90,11 +121,24 @@ namespace Forum.Application.Services
         }
         private static void ValidateCreateModel(CommentForCreatingDto model)
         {
+            if (model is null)
+                throw new BadRequestException("Request body is required");
+
             if (string.IsNullOrWhiteSpace(model.Content))
                 throw new BadRequestException("Comment content is required");
 
             if (model.TopicId == Guid.Empty)
                 throw new BadRequestException("Topic id is required for comment to be added");
+        }
+        private static void ValidateUpdateModel(CommentForUpdatingDto model)
+        {
+            if (model is null)
+                throw new BadRequestException("Request body is required");
+
+            ValidateGuid(model.Id);
+
+            if (string.IsNullOrWhiteSpace(model.Content))
+                throw new BadRequestException("Comment content is required");
         }
 
         #endregion

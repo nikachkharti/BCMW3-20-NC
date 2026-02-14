@@ -144,7 +144,7 @@ namespace Forum.API.Controllers
         /// <summary>
         /// არსებულ პოსტზე კომენტარის განახლება.განაახლოს მხოლოდ ავტორმა
         /// </summary>
-        [HttpPut("{topicId}/comments")]
+        [HttpPatch("{topicId}/comments")]
         [Authorize]
         public async Task<IActionResult> UpdateComment([FromRoute] Guid topicId, [FromForm] CommentForUpdatingDto model)
         {
