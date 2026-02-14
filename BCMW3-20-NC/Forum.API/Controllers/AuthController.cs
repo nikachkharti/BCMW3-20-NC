@@ -78,7 +78,8 @@ namespace Forum.API.Controllers
         /// <summary>
         /// ბლოკის მოხსნა
         /// </summary>
-        [HttpPost("unlock/{userId}")]
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("unlock/{userId}")]
         public async Task<IActionResult> UnlockUserAccount([FromRoute] string userId)
         {
             var unlockResponse = await _authService.TryUnlockUserAccount(userId);
