@@ -40,7 +40,7 @@ namespace Forum.API.Controllers
         /// <summary>
         /// ადმინის რეგისტრაცია
         /// </summary>
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("register-admin")]
         [SwaggerRequestExample(typeof(RegistrationRequestDto), typeof(RegistrationAdminRequestDtoExample))]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegistrationRequestDto model)
@@ -87,7 +87,7 @@ namespace Forum.API.Controllers
             return StatusCode(Convert.ToInt32(HttpStatusCode.OK), new CommonResponse()
             {
                 IsSuccess = true,
-                Message = unlockResponse ? "User unlocked successfully" : "Unlock process failed. User is already unlocked",
+                Message = unlockResponse ? "User unlocked successfully" : "User is already unlocked",
                 Result = userId,
                 StatusCode = HttpStatusCode.OK
             });
@@ -105,7 +105,7 @@ namespace Forum.API.Controllers
             return StatusCode(Convert.ToInt32(HttpStatusCode.OK), new CommonResponse()
             {
                 IsSuccess = true,
-                Message = unlockResponse ? "User unlocked successfully" : "Unlock process failed. User is already unlocked",
+                Message = unlockResponse ? "User locked successfully" : "User is already locked",
                 Result = userId,
                 StatusCode = HttpStatusCode.OK
             });

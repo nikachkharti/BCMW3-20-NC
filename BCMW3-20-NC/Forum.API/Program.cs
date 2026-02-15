@@ -59,12 +59,9 @@ namespace Forum.API
                 options.IncludeXmlComments(xmlPath);
                 #endregion
 
-
-
                 #region Examples
                 options.ExampleFilters();
                 #endregion
-
             });
             builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
@@ -108,6 +105,15 @@ namespace Forum.API
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+            //Identity Options
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Lockout.MaxFailedAccessAttempts = 3;     // lock after 3 fails
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
 
 
             //Token Authentication logic

@@ -8,73 +8,61 @@ namespace Forum.Infrastructure.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public UserRepository(
-            ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
         }
 
-        public async Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string roleName)
-        {
-            return await _userManager.AddToRoleAsync(user, roleName);
-        }
-        public async Task<IdentityResult> RegisterAsync(ApplicationUser user, string password)
-        {
-            return await _userManager.CreateAsync(user, password);
-        }
-        public async Task<ApplicationUser> GetByEmailAsync(string email)
-        {
-            return await _context.ApplicationUsers
-                .FirstOrDefaultAsync(x => x.UserName.ToLower().Trim() == email.ToLower().Trim());
-        }
-        public async Task<IList<string>> GetRolesAsync(ApplicationUser user)
-        {
-            return await _userManager.GetRolesAsync(user);
-        }
-        public async Task<bool> IsPasswordValidAsync(ApplicationUser user, string password)
-        {
-            return await _userManager.CheckPasswordAsync(user, password);
-        }
-        public async Task<bool> RoleExistsAsync(string roleName)
-        {
-            return await _roleManager.RoleExistsAsync(roleName);
-        }
-        public async Task<IdentityResult> CreateRoleAsync(IdentityRole role)
-        {
-            return await _roleManager.CreateAsync(role);
-        }
-        public async Task<IdentityResult> LockUserAccount(ApplicationUser user)
-        {
-            user.EmailConfirmed = false;
+        public Task<ApplicationUser> GetByEmailAsync(string email)
+            => _userManager.FindByNameAsync(email);
 
-            var updateResult = await _userManager.UpdateAsync(user);
-            if (!updateResult.Succeeded)
-                return updateResult;
+        public Task<ApplicationUser> GetByIdAsync(string id)
+            => _userManager.FindByIdAsync(id);
 
-            return await _userManager.SetLockoutEnabledAsync(user, enabled: true);
-        }
-        public async Task<IdentityResult> UnlockUserAccount(ApplicationUser user)
+        public Task<IdentityResult> CreateAsync(ApplicationUser user, string password)
+            => _userManager.CreateAsync(user, password);
+
+        public Task AddToRoleAsync(ApplicationUser user, string role)
+            => _userManager.AddToRoleAsync(user, role);
+
+        public Task<IList<string>> GetRolesAsync(ApplicationUser user)
+            => _userManager.GetRolesAsync(user);
+
+        public Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
+            => _userManager.CheckPasswordAsync(user, password);
+
+        public Task<bool> IsLockedOutAsync(ApplicationUser user)
+            => _userManager.IsLockedOutAsync(user);
+
+        public Task AccessFailedAsync(ApplicationUser user)
+            => _userManager.AccessFailedAsync(user);
+
+        public Task ResetAccessFailedCountAsync(ApplicationUser user)
+            => _userManager.ResetAccessFailedCountAsync(user);
+
+        public Task LockAsync(ApplicationUser user)
+            => _userManager.SetLockoutEndDateAsync(
+                user,
+                DateTimeOffset.UtcNow.AddYears(100));
+
+        public Task UnlockAsync(ApplicationUser user)
+            => _userManager.SetLockoutEndDateAsync(user, null);
+
+        public async Task EnsureRoleExistsAsync(string roleName)
         {
-            user.EmailConfirmed = true;
-
-            var updateResult = await _userManager.UpdateAsync(user);
-            if (!updateResult.Succeeded)
-                return updateResult;
-
-            return await _userManager.SetLockoutEnabledAsync(user, enabled: false);
+            if (!await _roleManager.RoleExistsAsync(roleName))
+                await _roleManager.CreateAsync(new IdentityRole(roleName));
         }
-        public async Task<ApplicationUser> GetByIdAsync(string userId)
+
+        public async Task ClearLockoutAsync(ApplicationUser user)
         {
-            return await _context.ApplicationUsers
-                .FirstOrDefaultAsync(x => x.Id.ToLower().Trim() == userId.ToLower().Trim());
+            await _userManager.SetLockoutEndDateAsync(user, null);
         }
     }
 }
