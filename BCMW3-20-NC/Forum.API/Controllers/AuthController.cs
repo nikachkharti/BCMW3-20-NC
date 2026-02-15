@@ -40,7 +40,7 @@ namespace Forum.API.Controllers
         /// <summary>
         /// ადმინის რეგისტრაცია
         /// </summary>
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("register-admin")]
         [SwaggerRequestExample(typeof(RegistrationRequestDto), typeof(RegistrationAdminRequestDtoExample))]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegistrationRequestDto model)
