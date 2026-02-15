@@ -70,6 +70,24 @@ namespace Forum.Application.Services
 
             return false;
         }
+        public async Task<bool> TryLockUserAccount(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+                throw new BadRequestException($"[Account Lock Failure] {userId} is invalid");
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException($"[Account Lock Failure] User with id: {userId} not found.");
+
+            if (!user.LockoutEnabled)
+            {
+                var result = await _userRepository.LockUserAccount(user);
+                return result is not null && result.Succeeded;
+            }
+
+            return false;
+        }
 
 
 

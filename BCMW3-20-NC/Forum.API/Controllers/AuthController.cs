@@ -93,5 +93,23 @@ namespace Forum.API.Controllers
             });
         }
 
+        /// <summary>
+        /// ბლოკის დადება
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("lock/{userId}")]
+        public async Task<IActionResult> LockUserAccount([FromRoute] string userId)
+        {
+            var unlockResponse = await _authService.TryLockUserAccount(userId);
+
+            return StatusCode(Convert.ToInt32(HttpStatusCode.OK), new CommonResponse()
+            {
+                IsSuccess = true,
+                Message = unlockResponse ? "User unlocked successfully" : "Unlock process failed. User is already unlocked",
+                Result = userId,
+                StatusCode = HttpStatusCode.OK
+            });
+        }
+
     }
 }
