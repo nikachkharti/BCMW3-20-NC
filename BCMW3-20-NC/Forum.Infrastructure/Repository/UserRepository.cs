@@ -53,10 +53,22 @@ namespace Forum.Infrastructure.Repository
         }
         public async Task<IdentityResult> LockUserAccount(ApplicationUser user)
         {
+            user.EmailConfirmed = false;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+                return updateResult;
+
             return await _userManager.SetLockoutEnabledAsync(user, enabled: true);
         }
         public async Task<IdentityResult> UnlockUserAccount(ApplicationUser user)
         {
+            user.EmailConfirmed = true;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+                return updateResult;
+
             return await _userManager.SetLockoutEnabledAsync(user, enabled: false);
         }
         public async Task<ApplicationUser> GetByIdAsync(string userId)

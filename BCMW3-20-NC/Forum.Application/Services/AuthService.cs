@@ -33,7 +33,7 @@ namespace Forum.Application.Services
             if (user == null)
                 throw new BadRequestException($"[Login Failure] User with username: {loginRequestDto.UserName} not found.");
 
-            if (user.LockoutEnabled)
+            if (user.LockoutEnabled && !user.EmailConfirmed)
                 throw new BadRequestException($"[Login Failure] User account is inactive");
 
             bool isPasswordValid = await _userRepository.IsPasswordValidAsync(user, loginRequestDto.Password);
