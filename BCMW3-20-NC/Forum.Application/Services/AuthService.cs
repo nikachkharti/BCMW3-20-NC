@@ -44,7 +44,9 @@ namespace Forum.Application.Services
             }
 
             await _users.ResetAccessFailedCountAsync(user);
-            await _users.ClearLockoutAsync(user);
+
+            if (user.LockoutEnd != null)
+                await _users.ClearLockoutAsync(user);
 
 
             var roles = await _users.GetRolesAsync(user);

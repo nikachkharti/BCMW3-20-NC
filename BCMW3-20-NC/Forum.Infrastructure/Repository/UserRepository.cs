@@ -64,5 +64,14 @@ namespace Forum.Infrastructure.Repository
         {
             await _userManager.SetLockoutEndDateAsync(user, null);
         }
+
+        public async Task<List<ApplicationUser>> GetUnlockedUsers()
+        {
+            var utcNow = DateTime.UtcNow;
+
+            return await _userManager.Users
+                .Where(u => u.LockoutEnd <= utcNow)
+                .ToListAsync();
+        }
     }
 }
