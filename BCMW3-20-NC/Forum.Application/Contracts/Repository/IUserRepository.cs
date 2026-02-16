@@ -7,6 +7,7 @@ namespace Forum.Application.Contracts.Repository
     {
         Task<ApplicationUser> GetByEmailAsync(string email);
         Task<ApplicationUser> GetByIdAsync(string id);
+        Task<List<ApplicationUser>> GetUnlockedUsers();
 
         Task<IdentityResult> CreateAsync(ApplicationUser user, string password);
         Task AddToRoleAsync(ApplicationUser user, string role);

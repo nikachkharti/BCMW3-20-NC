@@ -2,6 +2,7 @@ using CloudinaryDotNet;
 using Forum.API.Middleware;
 using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
+using Forum.Application.Jobs;
 using Forum.Application.Mapping;
 using Forum.Application.Models.Cloudinary;
 using Forum.Application.Services;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Quartz;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
@@ -78,6 +80,7 @@ namespace Forum.API
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
             //Serilog
@@ -156,6 +159,24 @@ namespace Forum.API
             var cloudinary = new Cloudinary(account) { Api = { Secure = true } };
             builder.Services.AddSingleton(cloudinary);
             builder.Services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
+
+            //Quartz
+            builder.Services.AddQuartz(q =>
+            {
+                //1. UnlockNotificationJob
+                var unlockNotificationJobKey = new JobKey("UnlockNotificationJob");
+                q.AddJob<UnlockNotificationJob>(options => options.WithIdentity(unlockNotificationJobKey));
+                q.AddTrigger(options => options
+                    .ForJob(unlockNotificationJobKey)
+                    .WithIdentity("UnlockNotificationJob-cron-trigger")
+                    .WithCronSchedule("0 */2 * ? * *")
+                );
+            });
+            builder.Services.AddQuartzHostedService(q =>
+            {
+                q.WaitForJobsToComplete = true;
+            });
+
 
 
             var app = builder.Build();
