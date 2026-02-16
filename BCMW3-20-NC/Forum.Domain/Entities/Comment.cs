@@ -12,6 +12,9 @@ namespace Forum.Domain.Entities
         [Required]
         public string Content { get; set; }
 
+        public string ImageUrl { get; set; }
+        public string ImagePublicId { get; set; }
+
         [Required]
         public DateTime CommentDate { get; set; } = DateTime.Now;
 

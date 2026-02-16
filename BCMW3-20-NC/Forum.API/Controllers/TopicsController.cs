@@ -1,4 +1,5 @@
-﻿using Forum.API.Application.DTO.Topics;
+﻿using Forum.API.Application.DTO.Comments;
+using Forum.API.Application.DTO.Topics;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -123,33 +124,58 @@ namespace Forum.API.Controllers
 
 
         /// <summary>
-        /// არსებულ პოსტზე კომენტარის დამატება.დაამატოს მხოლოდ ავტორმა, განახლდეს ტოპიკის LastCommentDate თარიღი
+        /// არსებულ პოსტზე კომენტარის დამატება.
         /// </summary>
-        [HttpPost("{topicId}/comments")]
+        [HttpPost("comments")]
         [Authorize]
-        public async Task<IActionResult> AddComent(Guid topicId)
+        public async Task<IActionResult> AddComent([FromForm] CommentForCreatingDto model)
         {
-            throw new NotImplementedException();
+            var result = await _commentService.AddNewCommentAsync(model);
+
+            return StatusCode(StatusCodes.Status201Created, new CommonResponse
+            {
+                Message = "Comment added successfully",
+                StatusCode = HttpStatusCode.Created,
+                IsSuccess = true,
+                Result = result
+            });
         }
 
         /// <summary>
         /// არსებულ პოსტზე კომენტარის განახლება.განაახლოს მხოლოდ ავტორმა
         /// </summary>
-        [HttpPut("{topicId}/comments")]
+        [HttpPatch("{topicId}/comments")]
         [Authorize]
-        public async Task<IActionResult> UpdateComent(Guid topicId)
+        public async Task<IActionResult> UpdateComment([FromRoute] Guid topicId, [FromForm] CommentForUpdatingDto model)
         {
-            throw new NotImplementedException();
+            var result = await _commentService.UpdateCommentAsync(model);
+
+            return Ok(new CommonResponse
+            {
+                Message = $"Comment with id: {model.Id} updated successfully",
+                StatusCode = HttpStatusCode.OK,
+                IsSuccess = true,
+                Result = result
+            });
         }
+
 
         /// <summary>
         /// არსებულ პოსტზე კომენტარის წაშლა. წაშალოს მხოლოდ ავტორმა
         /// </summary>
-        [HttpDelete("{topicId}/comments")]
+        [HttpDelete("{topicId}/comments/{commentId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteComent(Guid topicId)
+        public async Task<IActionResult> DeleteComent([FromRoute] Guid topicId, [FromRoute] Guid commentId)
         {
-            throw new NotImplementedException();
+            var result = await _commentService.DeleteCommentAsync(commentId);
+
+            return Ok(new CommonResponse
+            {
+                Message = $"Comment with id: {commentId} deleted successfully",
+                StatusCode = HttpStatusCode.OK,
+                IsSuccess = true,
+                Result = result
+            });
         }
 
 

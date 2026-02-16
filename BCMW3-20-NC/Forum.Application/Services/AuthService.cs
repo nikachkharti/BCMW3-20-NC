@@ -10,82 +10,99 @@ namespace Forum.Application.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly IUserRepository _users;
+        private readonly IJwtTokenGenerator _jwt;
         private readonly IMapper _mapper;
-        private const string _adminRoleName = "Admin";
-        private const string _customerRoleName = "Customer";
+
+        private const string AdminRole = "Admin";
+        private const string CustomerRole = "Customer";
 
         public AuthService(
-            IUserRepository userRepository,
-            IJwtTokenGenerator jwtTokenGenerator,
+            IUserRepository users,
+            IJwtTokenGenerator jwt,
             IMapper mapper)
         {
-            _userRepository = userRepository;
-            _jwtTokenGenerator = jwtTokenGenerator;
+            _users = users;
+            _jwt = jwt;
             _mapper = mapper;
         }
 
-        public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
+        // ---------------- LOGIN ----------------
+
+        public async Task<LoginResponseDto> Login(LoginRequestDto dto)
         {
-            var user = await _userRepository.GetByEmailAsync(loginRequestDto.UserName);
+            var user = await _users.GetByEmailAsync(dto.UserName)
+                ?? throw new BadRequestException("Invalid credentials.");
 
-            if (user == null)
-                throw new BadRequestException($"[Login Failure] User with username: {loginRequestDto.UserName} not found.");
+            if (await _users.IsLockedOutAsync(user))
+                throw new BadRequestException("Account is locked.");
 
-            bool isPasswordValid = await _userRepository.IsPasswordValidAsync(user, loginRequestDto.Password);
-
-            if (!isPasswordValid)
-                throw new BadRequestException($"[Login Failure] Incorrect password");
-
-            var roles = await _userRepository.GetRolesAsync(user);
-            var token = _jwtTokenGenerator.GenerateToken(user, roles);
-
-            return new LoginResponseDto()
+            if (!await _users.CheckPasswordAsync(user, dto.Password))
             {
-                Token = token,
-            };
+                await _users.AccessFailedAsync(user);
+                throw new BadRequestException("Invalid credentials.");
+            }
+
+            await _users.ResetAccessFailedCountAsync(user);
+            await _users.ClearLockoutAsync(user);
+
+
+            var roles = await _users.GetRolesAsync(user);
+            var token = _jwt.GenerateToken(user, roles);
+
+            return new LoginResponseDto { Token = token };
         }
-        public Task<string> Register(RegistrationRequestDto dto) => RegisterInternal(dto, _customerRoleName, "Customer");
-        public Task<string> RegisterAdmin(RegistrationRequestDto dto) => RegisterInternal(dto, _adminRoleName, "Admin");
 
+        // ---------------- REGISTRATION ----------------
 
+        public Task<string> Register(RegistrationRequestDto dto)
+            => RegisterInternal(dto, CustomerRole, lockByDefault: true);
 
-        #region HELPERS
-        private async Task<string> RegisterInternal(RegistrationRequestDto dto, string roleName, string userType)
+        public Task<string> RegisterAdmin(RegistrationRequestDto dto)
+            => RegisterInternal(dto, AdminRole, lockByDefault: false);
+
+        private async Task<string> RegisterInternal(
+            RegistrationRequestDto dto,
+            string role,
+            bool lockByDefault)
         {
             var user = _mapper.Map<ApplicationUser>(dto);
+            user.UserName = dto.Email;
 
-            var result = await _userRepository.RegisterAsync(user, dto.Password);
+            var result = await _users.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)
-                throw new BadRequestException(
-                    $"[{userType} Registration Failure] Unable to register {userType.ToLower()} with email: {dto.Email}");
-            try
-            {
-                var userToReturn = await _userRepository.GetByEmailAsync(dto.Email.ToLower());
+                throw new BadRequestException("Registration failed.");
 
-                if (userToReturn == null)
-                    throw new NotFoundException(
-                        $"[{userType} Registration Failure] {userType} not found with email: {dto.Email}");
+            await _users.EnsureRoleExistsAsync(role);
+            await _users.AddToRoleAsync(user, role);
 
-                await EnsureRoleExists(roleName);
-                await _userRepository.AddToRoleAsync(userToReturn, roleName);
+            if (lockByDefault)
+                await _users.LockAsync(user);
+            else
+                await _users.UnlockAsync(user);
 
-                return userToReturn.Id;
-            }
-            catch (NotFoundException)
-            {
-                throw;
-            }
+            return user.Id;
         }
-        private async Task EnsureRoleExists(string roleName)
+
+        // ---------------- ADMIN OPERATIONS ----------------
+
+        public async Task<bool> TryUnlockUserAccount(string userId)
         {
-            if (!await _userRepository.RoleExistsAsync(roleName))
-                await _userRepository.CreateRoleAsync(new IdentityRole(roleName));
+            var user = await _users.GetByIdAsync(userId)
+                ?? throw new NotFoundException("User not found.");
+
+            await _users.UnlockAsync(user);
+            return true;
         }
-        #endregion
 
+        public async Task<bool> TryLockUserAccount(string userId)
+        {
+            var user = await _users.GetByIdAsync(userId)
+                ?? throw new NotFoundException("User not found.");
 
+            await _users.LockAsync(user);
+            return true;
+        }
     }
 }

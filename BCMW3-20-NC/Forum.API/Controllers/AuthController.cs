@@ -75,5 +75,41 @@ namespace Forum.API.Controllers
             });
         }
 
+        /// <summary>
+        /// ბლოკის მოხსნა
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("unlock/{userId}")]
+        public async Task<IActionResult> UnlockUserAccount([FromRoute] string userId)
+        {
+            var unlockResponse = await _authService.TryUnlockUserAccount(userId);
+
+            return StatusCode(Convert.ToInt32(HttpStatusCode.OK), new CommonResponse()
+            {
+                IsSuccess = true,
+                Message = unlockResponse ? "User unlocked successfully" : "User is already unlocked",
+                Result = userId,
+                StatusCode = HttpStatusCode.OK
+            });
+        }
+
+        /// <summary>
+        /// ბლოკის დადება
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("lock/{userId}")]
+        public async Task<IActionResult> LockUserAccount([FromRoute] string userId)
+        {
+            var unlockResponse = await _authService.TryLockUserAccount(userId);
+
+            return StatusCode(Convert.ToInt32(HttpStatusCode.OK), new CommonResponse()
+            {
+                IsSuccess = true,
+                Message = unlockResponse ? "User locked successfully" : "User is already locked",
+                Result = userId,
+                StatusCode = HttpStatusCode.OK
+            });
+        }
+
     }
 }
