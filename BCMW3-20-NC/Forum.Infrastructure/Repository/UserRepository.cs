@@ -25,8 +25,19 @@ namespace Forum.Infrastructure.Repository
         public Task<ApplicationUser> GetByIdAsync(string id)
             => _userManager.FindByIdAsync(id);
 
+        public async Task<List<ApplicationUser>> GetUnlockedUsers()
+        {
+            var utcNow = DateTime.UtcNow;
+
+            return await _userManager.Users
+                .Where(u => u.LockoutEnd <= utcNow)
+                .ToListAsync();
+        }
+
+
         public Task<IdentityResult> CreateAsync(ApplicationUser user, string password)
             => _userManager.CreateAsync(user, password);
+
 
         public Task AddToRoleAsync(ApplicationUser user, string role)
             => _userManager.AddToRoleAsync(user, role);

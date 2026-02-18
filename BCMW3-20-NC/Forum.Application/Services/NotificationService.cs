@@ -52,7 +52,7 @@ namespace Forum.Application.Services
                 return new SendEmailResponse(true, $"Message sent successfully to: {to}");
             }
             catch (Exception ex)
-            {
+    {
                 Log.Error(ex, "Failed to send email to {Recepient}: {Message}", to, ex.Message);
                 return new SendEmailResponse(false, ex.Message, ex);
             }

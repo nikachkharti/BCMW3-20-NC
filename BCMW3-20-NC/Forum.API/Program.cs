@@ -162,6 +162,24 @@ namespace Forum.API
             builder.Services.AddSingleton(cloudinary);
             builder.Services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
 
+            //Quartz
+            builder.Services.AddQuartz(q =>
+            {
+                //1. UnlockNotificationJob
+                var unlockNotificationJobKey = new JobKey("UnlockNotificationJob");
+                q.AddJob<UnlockNotificationJob>(options => options.WithIdentity(unlockNotificationJobKey));
+                q.AddTrigger(options => options
+                    .ForJob(unlockNotificationJobKey)
+                    .WithIdentity("UnlockNotificationJob-cron-trigger")
+                    .WithCronSchedule("0 */2 * ? * *")
+                );
+            });
+            builder.Services.AddQuartzHostedService(q =>
+            {
+                q.WaitForJobsToComplete = true;
+            });
+
+
 
             //Quartz
             builder.Services.AddQuartz(q =>
