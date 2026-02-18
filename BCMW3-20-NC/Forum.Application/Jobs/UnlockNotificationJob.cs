@@ -24,7 +24,7 @@ namespace Forum.Application.Jobs
                 foreach (var user in unlockedUsers)
                 {
                     await _userRepository.UnlockAsync(user);
-                    //await _notificationService.SendAsync(); // TODO: Implement
+                    await _notificationService.SendAsync(user.Email, "Account Unlock", "<h1>Your Account Unlocked Successfully</h1>");
                 }
             }
         }

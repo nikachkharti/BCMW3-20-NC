@@ -5,6 +5,7 @@ using Forum.Application.Contracts.Service;
 using Forum.Application.Jobs;
 using Forum.Application.Mapping;
 using Forum.Application.Models.Cloudinary;
+using Forum.Application.Models.Notification;
 using Forum.Application.Services;
 using Forum.Domain.Entities;
 using Forum.Infrastructure.Data;
@@ -81,6 +82,7 @@ namespace Forum.API
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddSingleton<ISmtpClientWrapper, SmtpClientWrapper>();
 
 
             //Serilog
