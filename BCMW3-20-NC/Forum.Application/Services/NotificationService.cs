@@ -52,7 +52,7 @@ namespace Forum.Application.Services
                 return new SendEmailResponse(true, $"Message sent successfully to: {to}");
             }
             catch (Exception ex)
-    {
+            {
                 Log.Error(ex, "Failed to send email to {Recepient}: {Message}", to, ex.Message);
                 return new SendEmailResponse(false, ex.Message, ex);
             }
@@ -67,9 +67,16 @@ namespace Forum.Application.Services
             if (string.IsNullOrWhiteSpace(to))
                 throw new BadRequestException("Email address can't be empty");
 
-            var mailAddress = new MailAddress(to);
-            if (!mailAddress.Address.Contains("@") || !mailAddress.Address.Contains("."))
-                throw new BadRequestException("Invalid email addres format");
+            try
+            {
+                var mailAddress = new MailAddress(to);
+                if (!mailAddress.Address.Contains("@") || !mailAddress.Address.Contains("."))
+                    throw new BadRequestException("Invalid email addres format");
+            }
+            catch (FormatException)
+            {
+                throw new BadRequestException("Sending email must be a valid email address");
+            }
         }
 
 
