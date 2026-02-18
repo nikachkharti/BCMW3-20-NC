@@ -1,6 +1,5 @@
 ﻿using Forum.Application.Contracts.Repository;
 using Forum.Domain.Entities;
-using Forum.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -74,15 +73,6 @@ namespace Forum.Infrastructure.Repository
         public async Task ClearLockoutAsync(ApplicationUser user)
         {
             await _userManager.SetLockoutEndDateAsync(user, null);
-        }
-
-        public async Task<List<ApplicationUser>> GetUnlockedUsers()
-        {
-            var utcNow = DateTime.UtcNow;
-
-            return await _userManager.Users
-                .Where(u => u.LockoutEnd <= utcNow)
-                .ToListAsync();
         }
     }
 }
