@@ -61,6 +61,11 @@ namespace Forum.Application.Mapping
                 .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.UserName, src => src.Email)
                 .Map(dest => dest.FullName, src => src.FullName);
+
+            config.NewConfig<ApplicationUser, UserDto>()
+                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.Email, src => src.Email)
+                .Map(dest => dest.FullName, src => src.FullName);
         }
     }
 }

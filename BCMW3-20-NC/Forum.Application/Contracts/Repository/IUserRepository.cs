@@ -13,17 +13,19 @@ namespace Forum.Application.Contracts.Repository
         Task AddToRoleAsync(ApplicationUser user, string role);
 
         Task<IList<string>> GetRolesAsync(ApplicationUser user);
-        Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
+        Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
 
+        Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
         Task<bool> IsLockedOutAsync(ApplicationUser user);
+        Task<bool> IsEmailConfirmedAsync(ApplicationUser user);
+
         Task AccessFailedAsync(ApplicationUser user);
         Task ResetAccessFailedCountAsync(ApplicationUser user);
-
         Task LockAsync(ApplicationUser user);
         Task UnlockAsync(ApplicationUser user);
         Task ClearLockoutAsync(ApplicationUser user);
-
         Task EnsureRoleExistsAsync(string roleName);
+        Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token);
     }
 
 }

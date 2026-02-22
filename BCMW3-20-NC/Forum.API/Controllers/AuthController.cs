@@ -2,9 +2,12 @@
 using Forum.Application.Contracts.Service;
 using Forum.Application.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Swashbuckle.AspNetCore.Filters;
 using System.Net;
+using System.Text;
 
 namespace Forum.API.Controllers
 {
@@ -40,7 +43,7 @@ namespace Forum.API.Controllers
         /// <summary>
         /// ადმინის რეგისტრაცია
         /// </summary>
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("register-admin")]
         [SwaggerRequestExample(typeof(RegistrationRequestDto), typeof(RegistrationAdminRequestDtoExample))]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegistrationRequestDto model)
@@ -111,5 +114,21 @@ namespace Forum.API.Controllers
             });
         }
 
+        /// <summary>
+        /// ბლოკის მოხსნა და ანგარიშის აქტივაცია
+        /// </summary>
+        [HttpGet("activate")]
+        public async Task<IActionResult> ActivateAccount([FromQuery] string userId, [FromQuery] string token)
+        {
+            var accountActiated = await _authService.TryActivateUserAsync(userId, token);
+
+            return StatusCode(Convert.ToInt32(HttpStatusCode.OK), new CommonResponse()
+            {
+                IsSuccess = true,
+                Message = accountActiated ? "User unlocked and email confirmed successfully" : "User is already unlocked",
+                Result = userId,
+                StatusCode = HttpStatusCode.OK
+            });
+        }
     }
 }

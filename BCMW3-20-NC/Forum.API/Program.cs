@@ -85,6 +85,9 @@ namespace Forum.API
             builder.Services.AddSingleton<ISmtpClientWrapper, SmtpClientWrapper>();
 
 
+            //HttpContextAccessor
+            builder.Services.AddHttpContextAccessor();
+
             //Serilog
             builder.Host.UseSerilog((context, configuration) =>
             {
@@ -148,6 +151,11 @@ namespace Forum.API
                 };
             });
 
+            //Account Activation Token Logic
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromHours(3);
+            });
 
             //Cloudinary
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
@@ -179,25 +187,6 @@ namespace Forum.API
                 q.WaitForJobsToComplete = true;
             });
 
-
-
-            //Quartz
-            builder.Services.AddQuartz(q =>
-            {
-                //UnlockNotificationJob
-                var jobKey = new JobKey("UnlockNotificationJob");
-                q.AddJob<UnlockNotificationJob>(opts => opts.WithIdentity(jobKey));
-                q.AddTrigger(opts => opts
-                    .ForJob(jobKey)
-                    .WithIdentity("UnlockNotificationJob-cron-trigger")
-                    .WithCronSchedule(
-                        builder.Configuration.GetValue<string>("Quartz:UnlockNotificationJobCronExpression"))
-                    );
-            });
-            builder.Services.AddQuartzHostedService(q =>
-            {
-                q.WaitForJobsToComplete = true;
-            });
 
             var app = builder.Build();
 

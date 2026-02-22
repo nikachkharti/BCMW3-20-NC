@@ -49,6 +49,8 @@ namespace Forum.Infrastructure.Repository
 
         public Task<bool> IsLockedOutAsync(ApplicationUser user)
             => _userManager.IsLockedOutAsync(user);
+        public async Task<bool> IsEmailConfirmedAsync(ApplicationUser user) =>
+            await _userManager.IsEmailConfirmedAsync(user);
 
         public Task AccessFailedAsync(ApplicationUser user)
             => _userManager.AccessFailedAsync(user);
@@ -74,5 +76,11 @@ namespace Forum.Infrastructure.Repository
         {
             await _userManager.SetLockoutEndDateAsync(user, null);
         }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user) =>
+            await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        public async Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token) =>
+            await _userManager.ConfirmEmailAsync(user, token);
     }
 }

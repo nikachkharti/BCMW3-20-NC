@@ -9,6 +9,6 @@ namespace Forum.Application.Contracts.Service
         Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
         Task<bool> TryUnlockUserAccount(string userId);
         Task<bool> TryLockUserAccount(string userId);
-
+        Task<bool> TryActivateUserAsync(string userId, string token);
     }
 }
