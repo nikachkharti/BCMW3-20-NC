@@ -1,4 +1,5 @@
 using CloudinaryDotNet;
+using FluentValidation;
 using Forum.API.Middleware;
 using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
@@ -7,6 +8,7 @@ using Forum.Application.Mapping;
 using Forum.Application.Models.Cloudinary;
 using Forum.Application.Models.Notification;
 using Forum.Application.Services;
+using Forum.Application.Validators;
 using Forum.Domain.Entities;
 using Forum.Infrastructure.Data;
 using Forum.Infrastructure.Repository;
@@ -185,6 +187,17 @@ namespace Forum.API
             builder.Services.AddQuartzHostedService(q =>
             {
                 q.WaitForJobsToComplete = true;
+            });
+
+
+
+            //MediatR + FluentValidation
+            var applicationAssembly = typeof(ValidationBehavior<,>).Assembly;
+            builder.Services.AddValidatorsFromAssembly(applicationAssembly);
+            builder.Services.AddMediatR(options =>
+            {
+                options.RegisterServicesFromAssembly(applicationAssembly);
+                options.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
 
 

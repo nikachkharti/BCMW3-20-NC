@@ -1,6 +1,7 @@
 ﻿using Forum.Application.Contracts.Service;
 using Forum.Application.Exceptions;
 using Forum.Application.Models.Notification;
+using Forum.Application.Validators;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MimeKit.Text;
@@ -65,17 +66,17 @@ namespace Forum.Application.Services
         private void ValidateAddressWhereEmailSent(string to)
         {
             if (string.IsNullOrWhiteSpace(to))
-                throw new BadRequestException("Email address can't be empty");
+                throw new BadRequestException(Error.BuildErrorMessage("ValidateAddressWhereEmailSent", "Email address can't be empty"));
 
             try
             {
                 var mailAddress = new MailAddress(to);
                 if (!mailAddress.Address.Contains("@") || !mailAddress.Address.Contains("."))
-                    throw new BadRequestException("Invalid email addres format");
+                    throw new BadRequestException(Error.BuildErrorMessage("ValidateAddressWhereEmailSent", "Invalid email addres format"));
             }
             catch (FormatException)
             {
-                throw new BadRequestException("Sending email must be a valid email address");
+                throw new BadRequestException(Error.BuildErrorMessage("ValidateAddressWhereEmailSent", "Sending email must be a valid email address"));
             }
         }
 

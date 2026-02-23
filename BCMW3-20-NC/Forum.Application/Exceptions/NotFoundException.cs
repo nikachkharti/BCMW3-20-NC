@@ -1,9 +1,20 @@
-﻿namespace Forum.Application.Exceptions
+﻿using Forum.Application.Validators;
+
+namespace Forum.Application.Exceptions
 {
     public class NotFoundException : Exception
     {
-        public NotFoundException(string message) : base(message)
+        public IDictionary<string, string[]> Errors { get; }
+
+        public NotFoundException(IDictionary<string, string[]> errors) : base(GetFirstErrorMessage(errors))
         {
+            Errors = errors;
         }
+
+        private static string GetFirstErrorMessage(IDictionary<string, string[]> errors)
+        {
+            return errors.Values.SelectMany(v => v).FirstOrDefault() ?? Error.NotFoundErrorTitle;
+        }
+
     }
 }

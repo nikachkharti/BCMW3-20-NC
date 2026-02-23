@@ -1,8 +1,12 @@
 ﻿using Forum.API.Application.DTO.Comments;
 using Forum.API.Application.DTO.Topics;
 using Forum.Application.Contracts.Service;
+using Forum.Application.Features.Topics.Commands;
+using Forum.Application.Features.Topics.Queries;
 using Forum.Application.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -15,11 +19,13 @@ namespace Forum.API.Controllers
     {
         private readonly ITopicService _topicService;
         private readonly ICommentService _commentService;
+        private readonly IMediator _mediator;
 
-        public TopicsController(ITopicService topicService, ICommentService commentService)
+        public TopicsController(ITopicService topicService, ICommentService commentService, IMediator mediator)
         {
             _topicService = topicService;
             _commentService = commentService;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -30,7 +36,8 @@ namespace Forum.API.Controllers
             [FromQuery] int? pageNumber = 1,
             [FromQuery] int? pageSize = 10)
         {
-            var (topics, totalCount) = await _topicService.GetAllTopicsAsync(pageNumber, pageSize);
+            var query = new GetAllTopicsQuery(pageNumber, pageSize);
+            var result = await _mediator.Send(query, cancellationToken: default);
 
             return Ok(new CommonResponse
             {
@@ -39,8 +46,8 @@ namespace Forum.API.Controllers
                 IsSuccess = true,
                 Result = new
                 {
-                    Topics = topics,
-                    TotalCount = totalCount
+                    Topics = result.Topics,
+                    TotalCount = result.TotalCount
                 }
             });
         }
@@ -52,7 +59,8 @@ namespace Forum.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleTopic(Guid id)
         {
-            var result = await _topicService.GetTopicDetailsAsync(id);
+            var query = new GetTopicDetailsQuery(id);
+            var result = await _mediator.Send(query, cancellationToken: default);
 
             return Ok(new CommonResponse
             {
@@ -71,7 +79,8 @@ namespace Forum.API.Controllers
         [Authorize]
         public async Task<IActionResult> AddNewTopic([FromForm] TopicForCreatingDto model)
         {
-            var result = await _topicService.AddNewTopicAsync(model);
+            var command = new CreateTopicCommand(model);
+            var result = await _mediator.Send(command, cancellationToken: default);
 
             return StatusCode(StatusCodes.Status201Created, new CommonResponse
             {
@@ -92,7 +101,8 @@ namespace Forum.API.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateTopic([FromBody] TopicForUpdatingDto model)
         {
-            var result = await _topicService.UpdateTopicAsync(model);
+            var command = new UpdateTopicCommand(model);
+            var result = await _mediator.Send(command, cancellationToken: default);
 
             return Ok(new CommonResponse
             {
@@ -109,9 +119,10 @@ namespace Forum.API.Controllers
         /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteTopic(Guid id)
+        public async Task<IActionResult> DeleteTopic([FromRoute] Guid id)
         {
-            var result = await _topicService.DeleteTopicAsync(id);
+            var command = new DeleteTopicCommand(id);
+            var result = await _mediator.Send(command, cancellationToken: default);
 
             return Ok(new CommonResponse
             {

@@ -2,6 +2,7 @@
 
 namespace Forum.Application.Contracts.Service
 {
+    [Obsolete]
     public interface IAuthService
     {
         Task<string> Register(RegistrationRequestDto registrationRequestDto);

@@ -4,6 +4,7 @@ using Forum.Application.Contracts.Service;
 using Forum.Application.Exceptions;
 using Forum.Application.Models.Cloudinary;
 using Microsoft.AspNetCore.Http;
+using Error = Forum.Application.Validators.Error;
 
 namespace Forum.Application.Services
 {
@@ -26,7 +27,7 @@ namespace Forum.Application.Services
         public async Task<ImageUploadResultDto> UpdateAsync(string publicId, int width, int height, IFormFile newFile, bool invalidateCdn = true, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(publicId))
-                throw new BadRequestException("Public id is required while uploading a file on cloudinary");
+                throw new BadRequestException(Error.BuildErrorMessage("UpdateAsync", "Public id is required while uploading a file on cloudinary"));
 
             return await UploadInternalAsync
             (
@@ -68,7 +69,7 @@ namespace Forum.Application.Services
             CancellationToken ct)
         {
             if (file == null || file.Length == 0)
-                throw new BadRequestException("File is required to upload on cloudinary");
+                throw new BadRequestException(Error.BuildErrorMessage("UploadInternalAsync", "File is required to upload on cloudinary"));
 
             await using var stream = file.OpenReadStream();
 
@@ -91,7 +92,7 @@ namespace Forum.Application.Services
 
             var uploadResult = await cloudinary.UploadAsync(uploadParams, ct);
             if (uploadResult.Error != null)
-                throw new InternalServerException(uploadResult.Error.Message);
+                throw new InternalServerException(Error.BuildErrorMessage("UploadInternalAsync", uploadResult.Error.Message));
 
             return MapUploadResult(uploadResult);
         }

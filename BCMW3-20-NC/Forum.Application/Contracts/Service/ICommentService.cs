@@ -2,6 +2,7 @@
 
 namespace Forum.Application.Contracts.Service
 {
+    [Obsolete]
     public interface ICommentService
     {
         Task<int> AddNewCommentAsync(CommentForCreatingDto model);

@@ -3,6 +3,7 @@ using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Exceptions;
 using Forum.Application.Models.DTO.Comments;
+using Forum.Application.Validators;
 using Forum.Domain.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +12,7 @@ using System.Security.Claims;
 
 namespace Forum.Application.Services
 {
+    [Obsolete]
     public class TopicService : ITopicService
     {
         private readonly ITopicRepository _topicRepository;
@@ -29,6 +31,7 @@ namespace Forum.Application.Services
             _cloudinaryImageService = cloudinaryImageService;
         }
 
+        [Obsolete]
         public async Task<int> AddNewTopicAsync(TopicForCreatingDto model)
         {
             ValidateCreateModel(model);
@@ -37,7 +40,7 @@ namespace Forum.Application.Services
             var authenticatedUserId = AuthenticatedUserId();
 
             if (string.IsNullOrWhiteSpace(authenticatedUserId))
-                throw new ForbidException("Unable to add topic for unauthorzied user");
+                throw new ForbidException(Error.BuildErrorMessage("AddNewTopicAsync", "Unable to add topic for unauthorzied user"));
 
             var entity = _mapper.Map<Topic>(model);
             entity.AuthorId = authenticatedUserId;
@@ -56,6 +59,7 @@ namespace Forum.Application.Services
             }
         }
 
+        [Obsolete]
         public async Task<int> DeleteTopicAsync(Guid topicId)
         {
             ValidateGuid(topicId);
@@ -66,7 +70,7 @@ namespace Forum.Application.Services
                 throw new ArgumentException($"Topic with id '{topicId}' not found.");
 
             if (!UserCanModifyContent(topic))
-                throw new ForbidException($"Authenticated user have no permission");
+                throw new ForbidException(Error.BuildErrorMessage("DeleteTopicAsync", "Authenticated user have no permission"));
 
             _topicRepository.Remove(topic);
 
@@ -78,6 +82,7 @@ namespace Forum.Application.Services
             return result;
         }
 
+        [Obsolete]
         public async Task<(List<TopicListForGettingDto> Topics, int TotalCount)> GetAllTopicsAsync(
             int? pageNumber,
             int? pageSize)
@@ -95,6 +100,7 @@ namespace Forum.Application.Services
             return (topics, result.TotalCount);
         }
 
+        [Obsolete]
         public async Task<TopicDetailsForGettingDto> GetTopicDetailsAsync(Guid topicId)
         {
             ValidateGuid(topicId);
@@ -112,6 +118,8 @@ namespace Forum.Application.Services
             return _mapper.Map<TopicDetailsForGettingDto>(topic);
         }
 
+
+        [Obsolete]
         public async Task<int> UpdateTopicAsync(TopicForUpdatingDto model)
         {
             ValidateUpdateModel(model);
@@ -122,7 +130,7 @@ namespace Forum.Application.Services
                 throw new ArgumentException($"Topic with id '{model.Id}' not found.");
 
             if (!UserCanModifyContent(topic))
-                throw new ForbidException($"Authenticated user have no permission");
+                throw new ForbidException(Error.BuildErrorMessage("UpdateTopicAsync", "Authenticated user have no permission"));
 
             _mapper.Map(model, topic);
             return await _topicRepository.SaveAsync();
@@ -173,7 +181,7 @@ namespace Forum.Application.Services
                 throw new ArgumentException("Content is required.");
 
             if (model.Avatar is null || model.Avatar.Length == 0)
-                throw new BadRequestException("Image is required parameter");
+                throw new BadRequestException(Error.BuildErrorMessage("ValidateCreateModel", "Image is required parameter"));
         }
 
         private static void ValidateUpdateModel(TopicForUpdatingDto model)

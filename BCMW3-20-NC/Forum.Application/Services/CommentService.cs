@@ -2,6 +2,7 @@
 using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Exceptions;
+using Forum.Application.Validators;
 using Forum.Domain.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,7 @@ using System.Security.Claims;
 
 namespace Forum.Application.Services
 {
+    [Obsolete]
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
@@ -37,7 +39,7 @@ namespace Forum.Application.Services
 
             var authenticatedUserId = AuthenticatedUserId();
             if (string.IsNullOrWhiteSpace(authenticatedUserId))
-                throw new ForbidException("Unable to add a comment for unauthorzied user");
+                throw new ForbidException(Error.BuildErrorMessage("AddNewCommentAsync", "Unable to add a comment for unauthorzied user"));
 
             var uploadResult = await _cloudinaryImageService.UploadAsync(model.Image, _width, _height, folder: "comments");
 
@@ -64,10 +66,10 @@ namespace Forum.Application.Services
             var comment = await _commentRepository.GetAsync(c => c.Id == commentId);
 
             if (comment == null)
-                throw new NotFoundException($"Comment with id '{commentId}' not found.");
+                throw new NotFoundException(Error.BuildErrorMessage("DeleteCommentAsync", $"Comment with id '{commentId}' not found."));
 
             if (!UserCanModifyContent(comment))
-                throw new ForbidException($"Authenticated user have no permission");
+                throw new ForbidException(Error.BuildErrorMessage("DeleteCommentAsync", $"Authenticated user have no permission"));
 
             _commentRepository.Remove(comment);
             int result = await _commentRepository.SaveAsync();
@@ -84,12 +86,12 @@ namespace Forum.Application.Services
             var comment = await _commentRepository.GetAsync(c => c.Id == model.Id);
 
             if (comment == null)
-                throw new NotFoundException($"Comment with id '{model.Id}' not found.");
+                throw new NotFoundException(Error.BuildErrorMessage("UpdateCommentAsync", $"Comment with id '{model.Id}' not found."));
 
             var authenticatedUserId = AuthenticatedUserId();
 
             if (!UserCanModifyContent(comment))
-                throw new ForbidException("Authenticated user have no permission.");
+                throw new ForbidException(Error.BuildErrorMessage("UpdateCommentAsync", "Authenticated user have no permission."));
 
             //PATCH BEHAVIOR
             if (!string.IsNullOrWhiteSpace(model.Content))
@@ -122,23 +124,23 @@ namespace Forum.Application.Services
         private static void ValidateCreateModel(CommentForCreatingDto model)
         {
             if (model is null)
-                throw new BadRequestException("Request body is required");
+                throw new BadRequestException(Error.BuildErrorMessage("ValidateCreateModel", "Request body is required"));
 
             if (string.IsNullOrWhiteSpace(model.Content))
-                throw new BadRequestException("Comment content is required");
+                throw new BadRequestException(Error.BuildErrorMessage("ValidateCreateModel", "Comment content is required"));
 
             if (model.TopicId == Guid.Empty)
-                throw new BadRequestException("Topic id is required for comment to be added");
+                throw new BadRequestException(Error.BuildErrorMessage("ValidateCreateModel", "Topic id is required for comment to be added"));
         }
         private static void ValidateUpdateModel(CommentForUpdatingDto model)
         {
             if (model is null)
-                throw new BadRequestException("Request body is required");
+                throw new BadRequestException(Error.BuildErrorMessage("ValidateUpdateModel", "Request body is required"));
 
             ValidateGuid(model.Id);
 
             if (string.IsNullOrWhiteSpace(model.Content))
-                throw new BadRequestException("Comment content is required");
+                throw new BadRequestException(Error.BuildErrorMessage("ValidateUpdateModel", "Comment content is required"));
         }
 
         #endregion

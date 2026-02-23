@@ -2,6 +2,7 @@
 
 namespace Forum.Application.Contracts.Service
 {
+    [Obsolete]
     public interface ITopicService
     {
         Task<(List<TopicListForGettingDto> Topics, int TotalCount)> GetAllTopicsAsync(

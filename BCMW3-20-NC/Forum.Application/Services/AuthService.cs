@@ -2,6 +2,7 @@
 using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Exceptions;
+using Forum.Application.Validators;
 using Forum.Domain.Entities;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,7 @@ using System.Text;
 
 namespace Forum.Application.Services
 {
+    [Obsolete]
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _users;
@@ -40,20 +42,20 @@ namespace Forum.Application.Services
         public async Task<LoginResponseDto> Login(LoginRequestDto dto)
         {
             var user = await _users.GetByEmailAsync(dto.UserName)
-                ?? throw new BadRequestException("Invalid credentials.");
+                ?? throw new BadRequestException(Error.BuildErrorMessage("Login", "Invalid credentials"));
 
             var roles = await _users.GetRolesAsync(user);
 
             if (await _users.IsLockedOutAsync(user))
-                throw new BadRequestException("Account is locked.");
+                throw new BadRequestException(Error.BuildErrorMessage("Login", "Account is locked"));
 
             if (!await _users.IsEmailConfirmedAsync(user) && !roles.Contains("Admin"))
-                throw new BadRequestException("Email is not confirmed.");
+                throw new BadRequestException(Error.BuildErrorMessage("Login", "Email is not confirmed"));
 
             if (!await _users.CheckPasswordAsync(user, dto.Password))
             {
                 await _users.AccessFailedAsync(user);
-                throw new BadRequestException("Invalid credentials.");
+                throw new BadRequestException(Error.BuildErrorMessage("Login", "Invalid credentials"));
             }
 
             await _users.ResetAccessFailedCountAsync(user);
@@ -88,7 +90,7 @@ namespace Forum.Application.Services
         public async Task<bool> TryUnlockUserAccount(string userId)
         {
             var user = await _users.GetByIdAsync(userId)
-                ?? throw new NotFoundException("User not found.");
+                ?? throw new NotFoundException(Error.BuildErrorMessage("TryUnlockUserAccount", "User not found"));
 
             await _users.UnlockAsync(user);
             return true;
@@ -101,7 +103,7 @@ namespace Forum.Application.Services
         public async Task<bool> TryLockUserAccount(string userId)
         {
             var user = await _users.GetByIdAsync(userId)
-                ?? throw new NotFoundException("User not found.");
+                ?? throw new NotFoundException(Error.BuildErrorMessage("TryLockUserAccount", "User not found"));
 
             await _users.LockAsync(user);
             return true;
@@ -131,15 +133,15 @@ namespace Forum.Application.Services
         private async Task<ApplicationUser> GetUser(string userId)
         {
             return await _users.GetByIdAsync(userId)
-                ?? throw new NotFoundException("User not found.");
+                ?? throw new NotFoundException(Error.BuildErrorMessage("GetUser", "User not found"));
         }
         private async Task<bool> TryConfirmUserAsync(ApplicationUser user, string token)
         {
             if (user is null)
-                throw new BadRequestException("User object is required for account confirmation");
+                throw new BadRequestException(Error.BuildErrorMessage("TryConfirmUserAsync", "User object is required for account confirmation"));
 
             if (string.IsNullOrWhiteSpace(token))
-                throw new BadRequestException("Activation token is required for account confirmation");
+                throw new BadRequestException(Error.BuildErrorMessage("TryConfirmUserAsync", "Activation token is required for account confirmation"));
 
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
 
@@ -174,7 +176,7 @@ namespace Forum.Application.Services
             }
             catch (Exception ex)
             {
-                throw new InternalServerException($"User : {newUser.Id} registered successfully but account activation process via email failed : {ex.Message}");
+                throw new InternalServerException(Error.BuildErrorMessage("TrySendActivationEmailAsync", $"User : {newUser.Id} registered successfully but account activation process via email failed : {ex.Message}"));
             }
         }
         private async Task<ApplicationUser> RegisterInternal(RegistrationRequestDto dto, string role, bool lockByDefault)
@@ -185,7 +187,7 @@ namespace Forum.Application.Services
             var result = await _users.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)
-                throw new BadRequestException("Registration failed.");
+                throw new BadRequestException(Error.BuildErrorMessage("RegisterInternal", "Registration failed."));
 
             await _users.EnsureRoleExistsAsync(role);
             await _users.AddToRoleAsync(user, role);
