@@ -69,7 +69,19 @@ namespace Forum.API
             builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
             //DbContext
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerLocalConnection")));
+            builder.Services.AddDbContext<ApplicationDbContext>(
+                options => options
+                    .UseSqlServer(
+                        builder.Configuration.GetConnectionString("SqlServerLocalConnection"),
+                        sqlOptions =>
+                        {
+                            sqlOptions.EnableRetryOnFailure(
+                                maxRetryCount: 10,
+                                maxRetryDelay: TimeSpan.FromSeconds(5),
+                                errorNumbersToAdd: null);
+                        }
+                    )
+            );
 
             //Repository
             builder.Services.AddScoped<ITopicRepository, TopicRepository>();
