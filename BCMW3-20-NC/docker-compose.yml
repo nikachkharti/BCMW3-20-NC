@@ -37,7 +37,8 @@ services:
       - ConnectionStrings__SqlServerLocalConnection=Server=forumdb;Database=Forum;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
       
       # Redis
-      - Redis__Connection=""
+      - Redis__ConnectionString=forumredis:6379
+      - Redis__InstanceName="ForumDocker"
 
       # JWT
       - JwtOptions__Secret=A8680A4C-E2DD-458B-A193-099A29288A05-25B6C1E4-229D-4F76-A386-D5A953B1E19F

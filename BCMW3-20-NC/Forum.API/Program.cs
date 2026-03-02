@@ -1,6 +1,7 @@
 using CloudinaryDotNet;
 using Forum.API.Middleware;
 using Forum.Application.Contracts.Repository;
+using Forum.Application.Contracts.Repository.Redis;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Jobs;
 using Forum.Application.Mapping;
@@ -10,6 +11,7 @@ using Forum.Application.Services;
 using Forum.Domain.Entities;
 using Forum.Infrastructure.Data;
 using Forum.Infrastructure.Repository;
+using Forum.Infrastructure.Repository.Redis;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,6 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Quartz;
 using Serilog;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
@@ -198,6 +201,36 @@ namespace Forum.API
             {
                 q.WaitForJobsToComplete = true;
             });
+
+
+            #region Redis
+
+            //Redis
+            var redisConnectionString = builder.Configuration["Redis:ConnectionString"]
+                ?? throw new InvalidOperationException("Redis connection string is not configured.");
+
+            Console.WriteLine($"Redis Connection: {redisConnectionString}");
+
+
+            // ── Step 2: Register the Redis connection as Singleton ────────────────────────
+            // IConnectionMultiplexer is thread-safe and expensive to create.
+            // Always register it as Singleton.
+            builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var config = ConfigurationOptions.Parse(redisConnectionString);
+                config.AbortOnConnectFail = false;  // Don't crash app if Redis is unavailable at startup
+                config.ConnectRetry = 3;
+                config.ConnectTimeout = 5000;   // 5 seconds
+                config.ReconnectRetryPolicy = new ExponentialRetry(5000);
+                return ConnectionMultiplexer.Connect(config);
+            });
+
+            // ── Step 3: Register Generic Redis Repositories ───────────────────────────────
+            // Each type gets its own typed repository instance.
+            // Scoped is fine here because IDatabase is retrieved per-call from the Singleton multiplexer.
+            builder.Services.AddScoped(typeof(IRedisRepository<>), typeof(RedisRepository<>));
+            #endregion
+
 
 
             var app = builder.Build();
