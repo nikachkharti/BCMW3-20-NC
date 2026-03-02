@@ -56,7 +56,7 @@ services:
       - EmailSettings__Port=465
       - EmailSettings__UseSsl=true
       - EmailSettings__Username=nika.chkhartishvili7@gmail.com
-      - EmailSettings__Password=iewu xuso begl sfbz
+      - EmailSettings__Password=iewu xuso begl sfba
 
       # Serilog Minimum Level Override
       - Serilog__MinimumLevel__Default=Information

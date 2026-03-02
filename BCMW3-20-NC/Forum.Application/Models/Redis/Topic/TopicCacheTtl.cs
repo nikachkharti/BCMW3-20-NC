@@ -1,4 +1,4 @@
-﻿namespace Forum.Application.Helpers.Cache
+﻿namespace Forum.Application.Models.Redis.Topic
 {
     // ─────────────────────────────────────────────────────────────────────────
     // CACHE TTL CONSTANTS

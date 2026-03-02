@@ -1,6 +1,6 @@
 ﻿using Forum.API.Application.DTO.Topics;
 
-namespace Forum.Application.Helpers.Cache
+namespace Forum.Application.Models.Redis.Topic
 {
     public class TopicListCacheEntry
     {
