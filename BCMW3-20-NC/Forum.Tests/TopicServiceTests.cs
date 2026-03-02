@@ -1,8 +1,10 @@
 ﻿using Forum.API.Application.DTO.Topics;
+using Forum.Application.Contracts.Redis;
 using Forum.Application.Contracts.Repository;
 using Forum.Application.Contracts.Service;
 using Forum.Application.Exceptions;
 using Forum.Application.Models.Cloudinary;
+using Forum.Application.Models.Redis.Topic;
 using Forum.Application.Services;
 using Forum.Domain.Entities;
 using Forum.Tests.Shared;
@@ -22,12 +24,14 @@ namespace Forum.Tests
         private readonly Mock<ITopicRepository> _topicRepo = new();
         private readonly Mock<IMapper> _mapper = new();
         private readonly Mock<ICloudinaryImageService> _cloudinary = new();
+        private readonly Mock<IRedisRepository<TopicDetailsForGettingDto>> _detailsCache = new();
+        private readonly Mock<IRedisRepository<TopicListCacheEntry>> _listCache = new();
 
         private TopicService CreateService(string userId = "user-1") =>
-            new(_topicRepo.Object, _mapper.Object, HttpContextFactory.Authenticated(userId), _cloudinary.Object);
+            new(_topicRepo.Object, _mapper.Object, HttpContextFactory.Authenticated(userId), _detailsCache.Object, _listCache.Object, _cloudinary.Object);
 
         private TopicService CreateUnauthenticatedService() =>
-            new(_topicRepo.Object, _mapper.Object, HttpContextFactory.Unauthenticated(), _cloudinary.Object);
+            new(_topicRepo.Object, _mapper.Object, HttpContextFactory.Unauthenticated(), _detailsCache.Object, _listCache.Object, _cloudinary.Object);
 
         // ---- AddNewTopicAsync ----
 
