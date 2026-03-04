@@ -15,6 +15,12 @@ namespace HMS.Core.Entities
         [Required]
         public DateTime CheckoutDate { get; set; }
 
-        public Guid GuestId { get; set; }
+        //Guest (ApplicationUser)
+        [ForeignKey(nameof(Guest))]
+        public string GuestId { get; set; }
+        public ApplicationUser Guest { get; set; }
+
+        //MxM with Room
+        public ICollection<ReservationRoom> ReservationRooms { get; set; }
     }
 }

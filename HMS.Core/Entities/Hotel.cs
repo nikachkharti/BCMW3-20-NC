@@ -28,5 +28,13 @@ namespace HMS.Core.Entities
         [Required]
         [MaxLength(50)]
         public string Address { get; set; }
+
+        //Manager Relationship (FK)
+        [ForeignKey(nameof(Manager))]
+        public string ManagerId { get; set; }
+        public ApplicationUser Manager { get; set; }
+
+        //Hotel → Rooms (1xM)
+        public ICollection<Room> Rooms { get; set; }
     }
 }

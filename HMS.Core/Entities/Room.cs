@@ -15,5 +15,13 @@ namespace HMS.Core.Entities
 
         [Required]
         public double Price { get; set; }
+
+        // FK to Hotel
+        [ForeignKey(nameof(Hotel))]
+        public Guid HotelId { get; set; }
+        public Hotel Hotel { get; set; }
+
+        // MxM with Reservation
+        public ICollection<ReservationRoom> ReservationRooms { get; set; }
     }
 }

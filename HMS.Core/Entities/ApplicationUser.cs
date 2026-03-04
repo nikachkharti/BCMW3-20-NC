@@ -17,5 +17,12 @@ namespace HMS.Core.Entities
         [MaxLength(11)]
         [MinLength(11)]
         public string PersonalNumber { get; set; }
+
+
+        // თუ არის Manager → მას შეიძლება ჰქონდეს რამდენიმე Hotel
+        public ICollection<Hotel> ManagedHotels { get; set; }
+
+        // თუ არის Guest → მას შეიძლება ჰქონდეს რამდენიმე Reservation
+        public ICollection<Reservation> Reservations { get; set; }
     }
 }
